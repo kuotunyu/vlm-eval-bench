@@ -1,0 +1,698 @@
+{
+  "configuration": {
+    "bootstrap_iterations": 2000,
+    "path": "results/audit/evaluation_config.yaml",
+    "seed": 3407,
+    "sha256": "590743b806db12ab2ccbb75c9e50b77aea00066392a7c394070cdd45422841ae"
+  },
+  "files": [
+    {
+      "aggregate_from_raw_rows": {
+        "ci95": [
+          0.9049,
+          0.9635
+        ],
+        "error_rate": 0.0,
+        "metric": "anls",
+        "n": 200,
+        "score": 0.9366
+      },
+      "model": "qwen3vl-8b-base",
+      "path": "qwen3vl-8b-base__docvqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.016623930874,
+        "error_count": 0,
+        "input_tokens": 242832,
+        "output_tokens": 1365,
+        "per_sample_mean_score": 0.9366446,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 0.85494502,
+          "p50_s": 0.54768041,
+          "p95_s": 1.01587322
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "383cc4c4f34fac0663d6cafa073aac42bf2a6cbe37add54cdf0e58aef3355d86",
+      "source_prediction_path": "results/predictions/qwen3vl-8b-base__docvqa.jsonl",
+      "source_prediction_sha256": "38391eb449df30a0eadcde91456de581a27dd95b1e702d5ddafbcdd8011b1e15",
+      "task": "docvqa"
+    },
+    {
+      "aggregate_from_raw_rows": {
+        "ci95": [
+          0.775,
+          0.88
+        ],
+        "error_rate": 0.0,
+        "human_accuracy": 0.71,
+        "machine_accuracy": 0.95,
+        "metric": "relaxed_accuracy",
+        "n": 200,
+        "score": 0.83
+      },
+      "model": "qwen3vl-8b-base",
+      "path": "qwen3vl-8b-base__chartqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.006237128854,
+        "error_count": 0,
+        "input_tokens": 92552,
+        "output_tokens": 892,
+        "per_sample_mean_score": 0.83,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 0.32076663,
+          "p50_s": 0.31577494,
+          "p95_s": 0.48581573
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "3b24635b1e14e2030a046b4811ec1c7fb6beb7e39f3c8313c9102409dbf07ece",
+      "source_prediction_path": "results/predictions/qwen3vl-8b-base__chartqa.jsonl",
+      "source_prediction_sha256": "6c2eb8d1d2823b2014750b0d83b1cc330a07592aa5650c1d6be3b0f59219f8d3",
+      "task": "chartqa"
+    },
+    {
+      "aggregate_from_raw_rows": {
+        "ci95": [
+          0.7037,
+          0.7719
+        ],
+        "error_rate": 0.0,
+        "fields": {
+          "discount": {
+            "f1": 0.2778,
+            "precision": 0.1667,
+            "recall": 0.8333,
+            "support": 6
+          },
+          "items.count": {
+            "f1": 0.9433,
+            "precision": 0.9066,
+            "recall": 0.9831,
+            "support": 237
+          },
+          "items.name": {
+            "f1": 0.7523,
+            "precision": 0.782,
+            "recall": 0.7247,
+            "support": 287
+          },
+          "items.price": {
+            "f1": 0.8571,
+            "precision": 0.8571,
+            "recall": 0.8571,
+            "support": 266
+          },
+          "items.unit_price": {
+            "f1": 0.3123,
+            "precision": 0.1955,
+            "recall": 0.7761,
+            "support": 67
+          },
+          "service": {
+            "f1": 0.5581,
+            "precision": 0.3871,
+            "recall": 1.0,
+            "support": 12
+          },
+          "subtotal": {
+            "f1": 0.7273,
+            "precision": 0.6,
+            "recall": 0.9231,
+            "support": 65
+          },
+          "tax": {
+            "f1": 0.7073,
+            "precision": 0.7073,
+            "recall": 0.7073,
+            "support": 41
+          },
+          "total": {
+            "f1": 0.7795,
+            "precision": 0.76,
+            "recall": 0.8,
+            "support": 95
+          }
+        },
+        "metric": "cord_f1",
+        "n": 100,
+        "score": 0.7423,
+        "total_exact_match": 0.76,
+        "valid_json_rate": 1.0
+      },
+      "model": "qwen3vl-8b-base",
+      "path": "qwen3vl-8b-base__cord.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.097789976092,
+        "error_count": 0,
+        "input_tokens": 100989,
+        "output_tokens": 17198,
+        "per_sample_mean_score": 0.715464,
+        "row_count": 100,
+        "uncached_latency": {
+          "count": 98,
+          "mean_s": 9.5318394,
+          "p50_s": 7.56309113,
+          "p95_s": 23.16854676
+        },
+        "unique_sample_count": 100
+      },
+      "sha256": "6574e469400407cc56733581e2f659e6e506d903513195747cff1c51038f0ce1",
+      "source_prediction_path": "results/predictions/qwen3vl-8b-base__cord.jsonl",
+      "source_prediction_sha256": "629bae1a2dbe97c6cb221355a24d006b19c178c8a34312661865282c308fdcba",
+      "task": "cord"
+    },
+    {
+      "aggregate_from_raw_rows": {
+        "ci95": [
+          0.8869,
+          0.952
+        ],
+        "error_rate": 0.0,
+        "metric": "anls",
+        "n": 200,
+        "score": 0.9214
+      },
+      "model": "qwen3vl-8b-receipt-qlora",
+      "path": "qwen3vl-8b-receipt-qlora__docvqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.018418612981,
+        "error_count": 0,
+        "input_tokens": 242832,
+        "output_tokens": 1411,
+        "per_sample_mean_score": 0.92138533,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 0.94724295,
+          "p50_s": 0.73723727,
+          "p95_s": 1.53727968
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "9b31cfcbdc7fdb2c3ec56ee0ebf39f13045ea0c8a4725c74025f78b0a981bc2f",
+      "source_prediction_path": "results/predictions/qwen3vl-8b-receipt-qlora__docvqa.jsonl",
+      "source_prediction_sha256": "68218fa349a1be2c9052b283adc46c3f84e70b100ac6c3a99b8d0bbe1842219c",
+      "task": "docvqa"
+    },
+    {
+      "aggregate_from_raw_rows": {
+        "ci95": [
+          0.78,
+          0.885
+        ],
+        "error_rate": 0.0,
+        "human_accuracy": 0.72,
+        "machine_accuracy": 0.95,
+        "metric": "relaxed_accuracy",
+        "n": 200,
+        "score": 0.835
+      },
+      "model": "qwen3vl-8b-receipt-qlora",
+      "path": "qwen3vl-8b-receipt-qlora__chartqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.010101491498,
+        "error_count": 0,
+        "input_tokens": 92552,
+        "output_tokens": 994,
+        "per_sample_mean_score": 0.835,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 0.51950528,
+          "p50_s": 0.49639981,
+          "p95_s": 0.75748266
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "3b14f6d50b01cbe64579aa94ff03a944ab6b2f6d0d8101624705172a6ed9f448",
+      "source_prediction_path": "results/predictions/qwen3vl-8b-receipt-qlora__chartqa.jsonl",
+      "source_prediction_sha256": "8115bd60291e5ebca7cd4e60792e8bccfff229dbf7bffb5f0b786653c9ca8636",
+      "task": "chartqa"
+    },
+    {
+      "aggregate_from_raw_rows": {
+        "ci95": [
+          0.8915,
+          0.95
+        ],
+        "error_rate": 0.0,
+        "fields": {
+          "discount": {
+            "f1": 0.8571,
+            "precision": 0.75,
+            "recall": 1.0,
+            "support": 6
+          },
+          "items.count": {
+            "f1": 0.9769,
+            "precision": 0.9708,
+            "recall": 0.9831,
+            "support": 237
+          },
+          "items.name": {
+            "f1": 0.8715,
+            "precision": 0.8685,
+            "recall": 0.8746,
+            "support": 287
+          },
+          "items.price": {
+            "f1": 0.9211,
+            "precision": 0.9211,
+            "recall": 0.9211,
+            "support": 266
+          },
+          "items.unit_price": {
+            "f1": 0.9118,
+            "precision": 0.8986,
+            "recall": 0.9254,
+            "support": 67
+          },
+          "service": {
+            "f1": 0.9167,
+            "precision": 0.9167,
+            "recall": 0.9167,
+            "support": 12
+          },
+          "subtotal": {
+            "f1": 0.9474,
+            "precision": 0.9265,
+            "recall": 0.9692,
+            "support": 65
+          },
+          "tax": {
+            "f1": 0.9756,
+            "precision": 0.9756,
+            "recall": 0.9756,
+            "support": 41
+          },
+          "total": {
+            "f1": 0.9271,
+            "precision": 0.9175,
+            "recall": 0.9368,
+            "support": 95
+          }
+        },
+        "metric": "cord_f1",
+        "n": 100,
+        "score": 0.9234,
+        "total_exact_match": 0.9,
+        "valid_json_rate": 1.0
+      },
+      "model": "qwen3vl-8b-receipt-qlora",
+      "path": "qwen3vl-8b-receipt-qlora__cord.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.090843917016,
+        "error_count": 0,
+        "input_tokens": 100989,
+        "output_tokens": 10966,
+        "per_sample_mean_score": 0.925499,
+        "row_count": 100,
+        "uncached_latency": {
+          "count": 100,
+          "mean_s": 9.34394575,
+          "p50_s": 7.56323875,
+          "p95_s": 21.53223591
+        },
+        "unique_sample_count": 100
+      },
+      "sha256": "4bd4be99e95af3c36ccf76399ae99bb4b3796fb55fab6fbfe2f54799e292c185",
+      "source_prediction_path": "results/predictions/qwen3vl-8b-receipt-qlora__cord.jsonl",
+      "source_prediction_sha256": "2c353db4e721d993d03a83c5f598e169018782feb6af15fd297a8bbdf39f9faf",
+      "task": "cord"
+    },
+    {
+      "aggregate_from_raw_rows": {
+        "ci95": [
+          0.8404,
+          0.9211
+        ],
+        "error_rate": 0.0,
+        "metric": "anls",
+        "n": 200,
+        "score": 0.8821
+      },
+      "model": "gemini-3.1-flash-lite",
+      "path": "gemini-3.1-flash-lite__docvqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.05715475,
+        "error_count": 0,
+        "input_tokens": 221941,
+        "output_tokens": 1113,
+        "per_sample_mean_score": 0.88205268,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 1.25948558,
+          "p50_s": 1.17067995,
+          "p95_s": 1.65369673
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "f3dbdb192af7d1e08118c229cde64a68b9eebb27d5206f84750f00606327d9fc",
+      "source_prediction_path": "results/predictions/gemini-3.1-flash-lite__docvqa.jsonl",
+      "source_prediction_sha256": "6605d99b8eec48c9d941ee2cdfce05bc6540686922d30e227e86d9c3d5e9e71e",
+      "task": "docvqa"
+    },
+    {
+      "aggregate_from_raw_rows": {
+        "ci95": [
+          0.525,
+          0.665
+        ],
+        "error_rate": 0.0,
+        "human_accuracy": 0.65,
+        "machine_accuracy": 0.54,
+        "metric": "relaxed_accuracy",
+        "n": 200,
+        "score": 0.595
+      },
+      "model": "gemini-3.1-flash-lite",
+      "path": "gemini-3.1-flash-lite__chartqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.056902,
+        "error_count": 0,
+        "input_tokens": 221860,
+        "output_tokens": 958,
+        "per_sample_mean_score": 0.595,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 1.06918117,
+          "p50_s": 1.03268278,
+          "p95_s": 1.32025843
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "4f0f514b0d8ed26f828076f0b352db0cf24465e5180d67cbd87a9a95b4fa2654",
+      "source_prediction_path": "results/predictions/gemini-3.1-flash-lite__chartqa.jsonl",
+      "source_prediction_sha256": "ff1a2f94ae1298af829802afa440ef21b3e948b7e10173451aa70a1aff883601",
+      "task": "chartqa"
+    },
+    {
+      "aggregate_from_raw_rows": {
+        "ci95": [
+          0.846,
+          0.8928
+        ],
+        "error_rate": 0.0,
+        "fields": {
+          "discount": {
+            "f1": 0.625,
+            "precision": 0.5,
+            "recall": 0.8333,
+            "support": 6
+          },
+          "items.count": {
+            "f1": 0.9831,
+            "precision": 0.9872,
+            "recall": 0.9789,
+            "support": 237
+          },
+          "items.name": {
+            "f1": 0.818,
+            "precision": 0.847,
+            "recall": 0.7909,
+            "support": 287
+          },
+          "items.price": {
+            "f1": 0.9474,
+            "precision": 0.9474,
+            "recall": 0.9474,
+            "support": 266
+          },
+          "items.unit_price": {
+            "f1": 0.4942,
+            "precision": 0.3333,
+            "recall": 0.9552,
+            "support": 67
+          },
+          "service": {
+            "f1": 0.96,
+            "precision": 0.9231,
+            "recall": 1.0,
+            "support": 12
+          },
+          "subtotal": {
+            "f1": 0.9624,
+            "precision": 0.9412,
+            "recall": 0.9846,
+            "support": 65
+          },
+          "tax": {
+            "f1": 0.9524,
+            "precision": 0.9302,
+            "recall": 0.9756,
+            "support": 41
+          },
+          "total": {
+            "f1": 0.9436,
+            "precision": 0.92,
+            "recall": 0.9684,
+            "support": 95
+          }
+        },
+        "metric": "cord_f1",
+        "n": 100,
+        "score": 0.8701,
+        "total_exact_match": 0.92,
+        "valid_json_rate": 1.0
+      },
+      "model": "gemini-3.1-flash-lite",
+      "path": "gemini-3.1-flash-lite__cord.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.05907325,
+        "error_count": 0,
+        "input_tokens": 121825,
+        "output_tokens": 19078,
+        "per_sample_mean_score": 0.863793,
+        "row_count": 100,
+        "uncached_latency": {
+          "count": 98,
+          "mean_s": 1.71245748,
+          "p50_s": 1.59677962,
+          "p95_s": 2.41378007
+        },
+        "unique_sample_count": 100
+      },
+      "sha256": "cf2cd1c5807c1a29a91591f5b6d6b4741f4466d26fadb9d3973faef6528e7861",
+      "source_prediction_path": "results/predictions/gemini-3.1-flash-lite__cord.jsonl",
+      "source_prediction_sha256": "af79d0eff571a7114d802e1e3f7c434e0fa9283642c4ef3eec6e9b1f9b59aecb",
+      "task": "cord"
+    },
+    {
+      "aggregate_from_raw_rows": {
+        "ci95": [
+          0.8168,
+          0.9027
+        ],
+        "error_rate": 0.0,
+        "metric": "anls",
+        "n": 200,
+        "score": 0.8621
+      },
+      "model": "gpt-5.4-mini",
+      "path": "gpt-5.4-mini__docvqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.2441365,
+        "error_count": 0,
+        "input_tokens": 294770,
+        "output_tokens": 1849,
+        "per_sample_mean_score": 0.86213357,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 1.52244505,
+          "p50_s": 1.2368775,
+          "p95_s": 3.07949554
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "2166dad2c364d4e853fed37a43ca4603b35fbeffdaca8e526a054bb66b6fe019",
+      "source_prediction_path": "results/predictions/gpt-5.4-mini__docvqa.jsonl",
+      "source_prediction_sha256": "525d9c004c2d003833f372edeb02607e1a18c1894b2a5f0d886e83cc99af6e2f",
+      "task": "docvqa"
+    },
+    {
+      "aggregate_from_raw_rows": {
+        "ci95": [
+          0.48,
+          0.62
+        ],
+        "error_rate": 0.0,
+        "human_accuracy": 0.6,
+        "machine_accuracy": 0.5,
+        "metric": "relaxed_accuracy",
+        "n": 200,
+        "score": 0.55
+      },
+      "model": "gpt-5.4-mini",
+      "path": "gpt-5.4-mini__chartqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.0980535,
+        "error_count": 0,
+        "input_tokens": 113325,
+        "output_tokens": 1643,
+        "per_sample_mean_score": 0.55,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 1.25341414,
+          "p50_s": 1.07662266,
+          "p95_s": 2.76573574
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "e840a1f3b21f2e7b0f7747e4e3b6b80c61c9a4f12c49c205edabb41cdbfe70e8",
+      "source_prediction_path": "results/predictions/gpt-5.4-mini__chartqa.jsonl",
+      "source_prediction_sha256": "25c14374924d83bba0f3866a390b2857825c40d085b523e2b6ba9af87b744df6",
+      "task": "chartqa"
+    },
+    {
+      "aggregate_from_raw_rows": {
+        "ci95": [
+          0.7892,
+          0.8469
+        ],
+        "error_rate": 0.0,
+        "fields": {
+          "discount": {
+            "f1": 0.6667,
+            "precision": 0.5556,
+            "recall": 0.8333,
+            "support": 6
+          },
+          "items.count": {
+            "f1": 0.971,
+            "precision": 0.9551,
+            "recall": 0.9873,
+            "support": 237
+          },
+          "items.name": {
+            "f1": 0.7592,
+            "precision": 0.766,
+            "recall": 0.7526,
+            "support": 287
+          },
+          "items.price": {
+            "f1": 0.9228,
+            "precision": 0.9029,
+            "recall": 0.9436,
+            "support": 266
+          },
+          "items.unit_price": {
+            "f1": 0.4469,
+            "precision": 0.2961,
+            "recall": 0.9104,
+            "support": 67
+          },
+          "service": {
+            "f1": 0.8571,
+            "precision": 0.75,
+            "recall": 1.0,
+            "support": 12
+          },
+          "subtotal": {
+            "f1": 0.7843,
+            "precision": 0.6818,
+            "recall": 0.9231,
+            "support": 65
+          },
+          "tax": {
+            "f1": 0.8354,
+            "precision": 0.8684,
+            "recall": 0.8049,
+            "support": 41
+          },
+          "total": {
+            "f1": 0.8808,
+            "precision": 0.8673,
+            "recall": 0.8947,
+            "support": 95
+          }
+        },
+        "metric": "cord_f1",
+        "n": 100,
+        "score": 0.8193,
+        "total_exact_match": 0.87,
+        "valid_json_rate": 1.0
+      },
+      "model": "gpt-5.4-mini",
+      "path": "gpt-5.4-mini__cord.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.13878615,
+        "error_count": 0,
+        "input_tokens": 119165,
+        "output_tokens": 9659,
+        "per_sample_mean_score": 0.802585,
+        "row_count": 100,
+        "uncached_latency": {
+          "count": 98,
+          "mean_s": 1.62745845,
+          "p50_s": 1.47119547,
+          "p95_s": 2.62289907
+        },
+        "unique_sample_count": 100
+      },
+      "sha256": "e5f6c08a87f5ff2ba85b84095ce7f7c4d39f34a6149aa6130a06eccfe4e51df3",
+      "source_prediction_path": "results/predictions/gpt-5.4-mini__cord.jsonl",
+      "source_prediction_sha256": "d77d3c7c60e67f1ded7022c833111374879b1c37f00704ed8fc47fe6f6b5d707",
+      "task": "cord"
+    }
+  ],
+  "generator": {
+    "command": "uv run python scripts/build_audit_pack.py",
+    "deduplication": "Last JSONL row wins for each sample_id; first-seen sample order is preserved (identical to the leaderboard reporter)."
+  },
+  "hardware_and_method": {
+    "api_models": "Provider round-trip latency and returned billed usage from the run.",
+    "cost": "Local dollars are imputed at $0.35/hour from measured inference time; API dollars use provider-returned usage and config pricing.",
+    "local_models": "RTX 4090, WSL2, 4-bit, batch size 1; no network latency."
+  },
+  "sample_manifests": {
+    "chartqa": {
+      "path": "data/samples/chartqa_seed3407.json",
+      "sha256": "9a43a80c69f72067f3374d1e9f892a1cc1f688eeeb802dd52c4803c1eea78095"
+    },
+    "cord": {
+      "path": "data/samples/cord_seed3407.json",
+      "sha256": "3f166e8d44dff1ef8c35de18232d4e32b903b1e0d1155225ff694c4aa033979e"
+    },
+    "docvqa": {
+      "path": "data/samples/docvqa_seed3407.json",
+      "sha256": "4034432774b2ee698af553b066ce0aa90e78ea95fd3ef115e688e8eda71fd99c"
+    }
+  },
+  "schema_version": 1,
+  "scope": {
+    "excluded_models": [
+      "gemini-2.5-flash-lite (disabled, incomplete free-tier run)",
+      "claude-haiku-4-5 (disabled, no complete billed run)"
+    ],
+    "models": [
+      "qwen3vl-8b-base",
+      "qwen3vl-8b-receipt-qlora",
+      "gemini-3.1-flash-lite",
+      "gpt-5.4-mini"
+    ],
+    "task_order": [
+      "docvqa",
+      "chartqa",
+      "cord"
+    ],
+    "tasks": {
+      "chartqa": 200,
+      "cord": 100,
+      "docvqa": 200
+    },
+    "total_rows": 2000
+  },
+  "verification_boundary": [
+    "Dataset images, prompts, and references are intentionally excluded from this pack.",
+    "DocVQA and ChartQA mean scores, all row counts, costs, token totals, errors, and uncached latency summaries are independently recomputable from the pack.",
+    "CORD uses corpus-level micro F1 and bootstrap intervals, which require references. Those aggregate values are recorded with hashes of the ignored raw sources, but cannot be independently rescored from this license-safe pack alone."
+  ]
+}
