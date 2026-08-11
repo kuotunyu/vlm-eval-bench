@@ -15,15 +15,16 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--audit-dir", type=Path, default=Path("results/audit"))
     parser.add_argument("--leaderboard", type=Path, default=Path("results/leaderboard.md"))
+    parser.add_argument("--readme", type=Path, default=Path("README.md"))
     args = parser.parse_args(argv)
 
     from vlmeval.audit import verify_audit_pack
 
-    summary = verify_audit_pack(args.audit_dir, args.leaderboard)
+    summary = verify_audit_pack(args.audit_dir, args.leaderboard, args.readme)
     print(
         "audit verified: "
         f"{summary['models']} models, {summary['tasks']} tasks, "
-        f"{summary['files']} files, {summary['rows']} rows; leaderboard consistent"
+        f"{summary['files']} files, {summary['rows']} rows; published claims consistent"
     )
     return 0
 

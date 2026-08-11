@@ -95,8 +95,8 @@ def _analysis_lines(
     averages = {mid: _average_score(mid, task_names, aggs) for mid in model_ids}
     best = max(model_ids, key=lambda mid: (averages[mid], mid))
     lines = [
-        f"**Overall.** `{best}` leads the complete runs with an unweighted {len(task_names)}-task "
-        f"average of **{averages[best]:.3f}**. The average is a navigation aid, not a "
+        f"**Cross-task summary.** `{best}` has the highest unweighted {len(task_names)}-task "
+        f"arithmetic mean (**{averages[best]:.3f}**) among these runs. This is a navigation aid, not a "
         "universal model ranking: each benchmark measures a different behavior and the "
         "per-task confidence intervals remain the primary evidence."
     ]
@@ -136,9 +136,11 @@ def _analysis_lines(
                 f"(average **{averages[cheapest_api]:.3f}**)."
             )
         lines.append(
-            "**API trade-off.** " + tradeoff + " These are billed token costs from this run; "
-            "the local-model dollar figures are separately marked as imputed GPU rental and "
-            "must not be read as API prices."
+            "**API trade-off.** "
+            + tradeoff
+            + " These are configured-price estimates reconstructed from provider-returned usage, "
+            "not invoice-reconciled charges. Local-model dollars are separately marked as imputed "
+            "GPU rental and must not be read as API prices."
         )
 
     all_rows = [row for mid in model_ids for name in task_names for row in rows_by[(mid, name)]]
@@ -147,8 +149,9 @@ def _analysis_lines(
         f"{name} n={len(rows_by[(model_ids[0], name)])}" for name in task_names
     )
     lines.append(
-        f"**Reliability and scope.** Complete runs finished with a combined error rate of "
-        f"**{error_rate:.2%}**. Results still describe fixed, seeded samples ({sample_scope}), "
+        f"**Reliability and scope.** Final deduplicated rows have a combined terminal error rate of "
+        f"**{error_rate:.2%}**; transient retry failures are not retained in that figure. Results "
+        f"still describe fixed, seeded samples ({sample_scope}), "
         "not production traffic; local batch-1 latency excludes "
         "network time and therefore is not directly comparable with API round trips."
     )
@@ -308,34 +311,7 @@ def generate_report(cfg: AppConfig, results_dir: Path) -> None:
         w(f"| {mid} | {err:.2%} | {vjr} |")
     w("")
 
-    # 5. error cases -------------------------------------------------------------
-    w("## Representative error cases")
-    w("")
-    w("Lowest-scoring samples per model × task (deterministic: score asc, sample_id asc).")
-    w("")
-    for mid in model_ids:
-        for t in tasks:
-            rows = rows_by.get((mid, t.name), [])
-            worst = sorted(rows, key=lambda r: (r["score"], r["sample_id"]))[:3]
-            worst = [r for r in worst if r["score"] < 1.0]
-            if not worst:
-                continue
-            w(f"### {mid} × {t.name}")
-            w("")
-            for r in worst:
-                q = (r.get("prompt") or "(prompt not recorded)").split("\n")[0]
-                pred = r.get("pred_clean") or (r.get("pred_raw") or "")[:200]
-                ref = str(r.get("reference"))
-                if len(ref) > 200:
-                    ref = ref[:200] + "…"
-                err = f" — ERROR: {r['error'][:120]}" if r.get("error") else ""
-                w(f"- `{r['sample_id']}` (score {r['score']:.2f}){err}")
-                w(f"  - Q: {q[:200]}")
-                w(f"  - expected: `{ref}`")
-                w(f"  - got: `{str(pred)[:200]}`")
-            w("")
-
-    # 6. analysis --------------------------------------------------------------------
+    # 5. analysis --------------------------------------------------------------------
     w("## Analysis")
     w("")
     for paragraph in _analysis_lines([t.name for t in tasks], model_ids, local_ids, aggs, rows_by):
@@ -398,31 +374,7 @@ def _make_charts(cfg, tasks, model_ids, local_ids, aggs, rows_by, charts_dir: Pa
     plt.close(fig)
     made.append(p)
 
-    # 2. cost vs score scatter
-    fig, ax = plt.subplots(figsize=(7, 5))
-    for mid in model_ids:
-        rows = [r for tn in task_names for r in rows_by.get((mid, tn), [])]
-        scores = [aggs[(mid, tn)]["score"] for tn in task_names if (mid, tn) in aggs]
-        if not rows or not scores:
-            continue
-        per100 = sum(r["cost_usd"] or 0.0 for r in rows) / len(rows) * 100
-        avg = sum(scores) / len(scores)
-        marker = "s" if mid in local_ids else "o"
-        ax.scatter([per100], [avg], marker=marker, s=90)
-        label = mid + (" (imputed $)" if mid in local_ids else "")
-        ax.annotate(label, (per100, avg), textcoords="offset points", xytext=(6, 4), fontsize=8)
-    ax.set_xscale("log")
-    ax.set_xlabel("$ per 100 questions (log; local = imputed GPU rental)")
-    ax.set_ylabel("average score across tasks")
-    ax.set_title("Cost vs. quality")
-    ax.grid(alpha=0.3)
-    fig.tight_layout()
-    p = charts_dir / "cost_vs_score.png"
-    fig.savefig(p, dpi=150)
-    plt.close(fig)
-    made.append(p)
-
-    # 3. latency p50/p95 horizontal bars (mean across tasks)
+    # 2. latency p50/p95 horizontal bars (mean across tasks)
     fig, ax = plt.subplots(figsize=(8, 0.6 * max(4, len(model_ids)) + 1))
     labels, p50s, p95s = [], [], []
     for mid in model_ids:
@@ -452,7 +404,7 @@ def _make_charts(cfg, tasks, model_ids, local_ids, aggs, rows_by, charts_dir: Pa
     plt.close(fig)
     made.append(p)
 
-    # 4. CORD per-field F1: base vs fine-tuned local model
+    # 3. CORD per-field F1: base vs fine-tuned local model
     pair = [m for m in model_ids if m in local_ids]
     if len(pair) >= 2 and all((m, "cord") in aggs for m in pair[:2]):
         base_f, ft_f = (aggs[(m, "cord")]["fields"] for m in pair[:2])

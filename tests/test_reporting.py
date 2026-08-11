@@ -1,7 +1,13 @@
 from vlmeval.config import AppConfig, ModelConfig, RunConfig, TaskConfig
 import json
 
-from vlmeval.reporting import _analysis_lines, _complete_model_ids, _dedup_rows
+from vlmeval.reporting import (
+    _analysis_lines,
+    _complete_model_ids,
+    _dedup_rows,
+    _make_charts,
+    generate_report,
+)
 
 
 def _cfg():
@@ -94,3 +100,75 @@ def test_report_input_order_is_canonical_after_latest_row_deduplication(tmp_path
 
     assert _dedup_rows(first) == _dedup_rows(second)
     assert [row["sample_id"] for row in _dedup_rows(first)] == ["a", "b"]
+
+
+def test_public_report_never_renders_dataset_or_prediction_text(tmp_path, monkeypatch):
+    class FakeTask:
+        name = "docvqa"
+
+        @staticmethod
+        def aggregate(rows):
+            return {"score": 0.0, "ci95": [0.0, 0.0], "n": len(rows)}
+
+    cfg = AppConfig(
+        run=RunConfig(),
+        tasks=(
+            TaskConfig(
+                name="docvqa",
+                hf_dataset="fixture",
+                split="test",
+                n_full=1,
+                n_mini=1,
+                max_output_tokens=8,
+                metric="fixture",
+            ),
+        ),
+        models=(ModelConfig(id="api", provider="fake"),),
+    )
+    pred_dir = tmp_path / "predictions"
+    pred_dir.mkdir()
+    row = {
+        "sample_id": "secret-id",
+        "score": 0.0,
+        "prompt": "PRIVATE-QUESTION",
+        "reference": "PRIVATE-REFERENCE",
+        "pred_clean": "PRIVATE-PREDICTION",
+        "cost_usd": 0.001,
+        "input_tokens": 10,
+        "output_tokens": 2,
+        "latency_s": 0.5,
+        "cached": False,
+        "error": None,
+    }
+    (pred_dir / "api__docvqa.jsonl").write_text(json.dumps(row) + "\n", encoding="utf-8")
+    monkeypatch.setattr("vlmeval.reporting.build_task", lambda *_: FakeTask())
+    monkeypatch.setattr("vlmeval.reporting._make_charts", lambda *_: [])
+
+    generate_report(cfg, tmp_path)
+
+    report = (tmp_path / "leaderboard.md").read_text(encoding="utf-8")
+    assert "PRIVATE-QUESTION" not in report
+    assert "PRIVATE-REFERENCE" not in report
+    assert "PRIVATE-PREDICTION" not in report
+    assert "Representative error cases" not in report
+
+
+def test_charts_do_not_compare_cross_task_average_with_cost(tmp_path):
+    class FakeTask:
+        name = "docvqa"
+
+    rows_by = {
+        ("api", "docvqa"): [{"cost_usd": 0.01, "latency_s": 0.5, "cached": False, "error": None}]
+    }
+    charts = _make_charts(
+        _cfg(),
+        [FakeTask()],
+        ["api"],
+        set(),
+        {("api", "docvqa"): {"score": 0.5, "ci95": [0.4, 0.6]}},
+        rows_by,
+        tmp_path,
+    )
+
+    assert "cost_vs_score.png" not in {chart.name for chart in charts}
+    assert not (tmp_path / "cost_vs_score.png").exists()

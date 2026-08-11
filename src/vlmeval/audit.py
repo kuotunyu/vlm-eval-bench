@@ -11,7 +11,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-AUDIT_SCHEMA_VERSION = 1
+AUDIT_SCHEMA_VERSION = 2
 PORTFOLIO_MODELS = (
     "qwen3vl-8b-base",
     "qwen3vl-8b-receipt-qlora",
@@ -23,11 +23,19 @@ AUDIT_ROW_KEYS = {
     "model",
     "task",
     "score",
-    "prediction",
     "usage",
     "cost_usd",
     "latency",
     "error",
+}
+PUBLISHED_ARTIFACT_PATHS = {
+    "README.md",
+    "EVALUATION_CARD.md",
+    "results/leaderboard.md",
+    "results/audit/README.md",
+    "results/charts/scores_by_task.png",
+    "results/charts/latency_p50_p95.png",
+    "results/charts/cord_f1_breakdown.png",
 }
 
 
@@ -65,15 +73,11 @@ def read_latest_rows(path: Path) -> list[dict[str, Any]]:
 
 
 def _audit_row(row: dict[str, Any]) -> dict[str, Any]:
-    prediction = row.get("pred_clean")
-    if prediction is None:
-        prediction = row.get("pred_raw")
     return {
         "sample_id": str(row["sample_id"]),
         "model": row["model"],
         "task": row["task"],
         "score": row["score"],
-        "prediction": prediction,
         "usage": {
             "input_tokens": row.get("input_tokens"),
             "output_tokens": row.get("output_tokens"),
@@ -103,6 +107,55 @@ def serialize_audit_rows(rows: list[dict[str, Any]]) -> bytes:
     return output.getvalue()
 
 
+def _validate_audit_row(row: dict[str, Any], context: str) -> None:
+    for field in ("sample_id", "model", "task"):
+        value = row[field]
+        if not isinstance(value, str) or not value:
+            raise AuditError(f"{context}: {field} must be a non-empty string")
+
+    score = row["score"]
+    if (
+        isinstance(score, bool)
+        or not isinstance(score, (int, float))
+        or not math.isfinite(score)
+        or not 0.0 <= score <= 1.0
+    ):
+        raise AuditError(f"{context}: score must be a finite number in [0, 1]")
+
+    usage = row["usage"]
+    for field in ("input_tokens", "output_tokens"):
+        value = usage[field]
+        if value is not None and (
+            isinstance(value, bool) or not isinstance(value, int) or value < 0
+        ):
+            raise AuditError(f"{context}: usage.{field} must be a non-negative integer or null")
+    if not isinstance(usage["source"], str) or not usage["source"]:
+        raise AuditError(f"{context}: usage.source must be a non-empty string")
+
+    cost = row["cost_usd"]
+    if cost is not None and (
+        isinstance(cost, bool)
+        or not isinstance(cost, (int, float))
+        or not math.isfinite(cost)
+        or cost < 0.0
+    ):
+        raise AuditError(f"{context}: cost_usd must be a finite non-negative number or null")
+
+    latency = row["latency"]
+    seconds = latency["seconds"]
+    if seconds is not None and (
+        isinstance(seconds, bool)
+        or not isinstance(seconds, (int, float))
+        or not math.isfinite(seconds)
+        or seconds < 0.0
+    ):
+        raise AuditError(f"{context}: latency.seconds must be a finite non-negative number or null")
+    if not isinstance(latency["cached"], bool):
+        raise AuditError(f"{context}: latency.cached must be a boolean")
+    if row["error"] is not None and not isinstance(row["error"], str):
+        raise AuditError(f"{context}: error must be a string or null")
+
+
 def read_audit_rows(path: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     with gzip.open(path, mode="rt", encoding="utf-8") as stream:
@@ -126,6 +179,7 @@ def read_audit_rows(path: Path) -> list[dict[str, Any]]:
                     raise AuditError(
                         f"{path}:{line_number}: unexpected {field} schema {actual_keys}"
                     )
+            _validate_audit_row(row, f"{path}:{line_number}")
             rows.append(row)
     return rows
 
@@ -193,6 +247,9 @@ def build_audit_pack(
         raise AuditError(f"models missing from config: {sorted(missing_models)}")
 
     audit_dir.mkdir(parents=True, exist_ok=True)
+    config_snapshot_path = audit_dir / "evaluation_config.yaml"
+    if config_snapshot_path.resolve() != config_path:
+        config_snapshot_path.write_bytes(config_path.read_bytes())
     for old_file in audit_dir.glob("*.jsonl.gz"):
         old_file.unlink()
 
@@ -255,8 +312,8 @@ def build_audit_pack(
             ),
         },
         "configuration": {
-            "path": config_path.name,
-            "sha256": sha256_file(config_path),
+            "path": config_snapshot_path.relative_to(project_root).as_posix(),
+            "sha256": sha256_file(config_snapshot_path),
             "seed": cfg.run.seed,
             "bootstrap_iterations": cfg.run.bootstrap_iters,
         },
@@ -280,6 +337,13 @@ def build_audit_pack(
                 "API dollars use provider-returned usage and config pricing."
             ),
         },
+        "published_artifacts": [
+            {
+                "path": relative_path,
+                "sha256": sha256_file(project_root / relative_path),
+            }
+            for relative_path in sorted(PUBLISHED_ARTIFACT_PATHS)
+        ],
         "verification_boundary": [
             "Dataset images, prompts, and references are intentionally excluded from this pack.",
             (
@@ -307,10 +371,9 @@ def _close(actual: float, expected: float, *, tolerance: float = 1e-9) -> bool:
 
 def _markdown_table(markdown: str, heading: str) -> dict[str, list[str]]:
     lines = markdown.splitlines()
-    try:
-        start = lines.index(heading)
-    except ValueError as exc:
-        raise AuditError(f"leaderboard is missing {heading}") from exc
+    start = next((index for index, line in enumerate(lines) if line.startswith(heading)), None)
+    if start is None:
+        raise AuditError(f"published Markdown is missing {heading}")
     rows: dict[str, list[str]] = {}
     found_header = False
     for line in lines[start + 1 :]:
@@ -330,7 +393,8 @@ def _markdown_table(markdown: str, heading: str) -> dict[str, list[str]]:
 
 def _find_model_row(table: dict[str, list[str]], model_id: str) -> list[str]:
     for label, cells in table.items():
-        if label.startswith(model_id):
+        plain_label = label.replace("*", "").replace("`", "").strip()
+        if plain_label.startswith(model_id):
             return cells
     raise AuditError(f"leaderboard table is missing model {model_id}")
 
@@ -342,7 +406,15 @@ def _first_number(value: str) -> float:
     return float(match.group())
 
 
-def verify_audit_pack(audit_dir: Path, leaderboard_path: Path | None = None) -> dict[str, Any]:
+def _numbers(value: str) -> list[float]:
+    return [float(number) for number in re.findall(r"-?\d+(?:\.\d+)?", value.replace(",", ""))]
+
+
+def verify_audit_pack(
+    audit_dir: Path,
+    leaderboard_path: Path | None = None,
+    readme_path: Path | None = None,
+) -> dict[str, Any]:
     """Verify bundle hashes/content and consistency with the committed leaderboard."""
     audit_dir = audit_dir.resolve()
     manifest_path = audit_dir / "run_manifest.json"
@@ -350,11 +422,7 @@ def verify_audit_pack(audit_dir: Path, leaderboard_path: Path | None = None) -> 
     if manifest.get("schema_version") != AUDIT_SCHEMA_VERSION:
         raise AuditError(f"unsupported schema version in {manifest_path}")
 
-    project_root = (
-        leaderboard_path.resolve().parent.parent
-        if leaderboard_path is not None
-        else audit_dir.parent.parent
-    )
+    project_root = audit_dir.parent.parent
 
     def verify_project_file(entry: dict[str, str], label: str) -> None:
         path = (project_root / entry["path"]).resolve()
@@ -370,6 +438,15 @@ def verify_audit_pack(audit_dir: Path, leaderboard_path: Path | None = None) -> 
     verify_project_file(manifest["configuration"], "configuration")
     for task_name, entry in manifest["sample_manifests"].items():
         verify_project_file(entry, f"sample manifest {task_name}")
+    published_artifacts = manifest.get("published_artifacts")
+    if (
+        not isinstance(published_artifacts, list)
+        or {entry.get("path") for entry in published_artifacts if isinstance(entry, dict)}
+        != PUBLISHED_ARTIFACT_PATHS
+    ):
+        raise AuditError("published artifact coverage mismatch")
+    for entry in published_artifacts:
+        verify_project_file(entry, "published artifact")
 
     expected_models = manifest["scope"]["models"]
     expected_tasks = manifest["scope"]["tasks"]
@@ -444,9 +521,19 @@ def verify_audit_pack(audit_dir: Path, leaderboard_path: Path | None = None) -> 
             task_scores = []
             for index, task_name in enumerate(task_names):
                 aggregate = entries_by_pair[(model_id, task_name)]["aggregate_from_raw_rows"]
-                displayed_score = _first_number(score_cells[index])
+                displayed = _numbers(score_cells[index])
+                if len(displayed) != 3:
+                    raise AuditError(
+                        f"leaderboard confidence interval is missing: {model_id}/{task_name}"
+                    )
+                displayed_score, displayed_lo, displayed_hi = displayed
                 if not _close(displayed_score, round(aggregate["score"], 3)):
                     raise AuditError(f"leaderboard score mismatch: {model_id}/{task_name}")
+                expected_lo, expected_hi = (round(value, 3) for value in aggregate["ci95"])
+                if not _close(displayed_lo, expected_lo) or not _close(displayed_hi, expected_hi):
+                    raise AuditError(
+                        f"leaderboard confidence interval mismatch: {model_id}/{task_name}"
+                    )
                 task_scores.append(float(aggregate["score"]))
             displayed_average = _first_number(score_cells[len(task_names)])
             if not _close(displayed_average, round(sum(task_scores) / len(task_scores), 3)):
@@ -467,10 +554,75 @@ def verify_audit_pack(audit_dir: Path, leaderboard_path: Path | None = None) -> 
             if int(_first_number(cost_cells[3])) != totals["output_tokens"]:
                 raise AuditError(f"leaderboard output-token mismatch: {model_id}")
 
+            reliability_table = _markdown_table(markdown, "## Reliability")
+            reliability_cells = _find_model_row(reliability_table, model_id)
+            expected_error_rate = totals["error_count"] / len(model_rows) * 100
+            if not _close(_first_number(reliability_cells[0]), round(expected_error_rate, 2)):
+                raise AuditError(f"leaderboard error-rate mismatch: {model_id}")
+            cord_aggregate = entries_by_pair[(model_id, "cord")]["aggregate_from_raw_rows"]
+            expected_valid_json = float(cord_aggregate["valid_json_rate"]) * 100
+            if not _close(_first_number(reliability_cells[1]), round(expected_valid_json, 2)):
+                raise AuditError(f"leaderboard valid-JSON mismatch: {model_id}")
+
+        # Parse latency rows directly because the first column repeats for each task.
+        latency_rows: dict[tuple[str, str], list[str]] = {}
+        lines = markdown.splitlines()
+        latency_start = next(i for i, line in enumerate(lines) if line.startswith("## Latency"))
+        for line in lines[latency_start + 1 :]:
+            if line.startswith("## "):
+                break
+            if not line.startswith("|"):
+                continue
+            cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+            if (
+                len(cells) != 5
+                or cells[0] == "Model"
+                or all(set(cell) <= {"-", ":"} for cell in cells)
+            ):
+                continue
+            model_id = next((mid for mid in expected_models if cells[0].startswith(mid)), None)
+            if model_id is not None:
+                latency_rows[(model_id, cells[1])] = cells[2:]
+        for pair, entry in entries_by_pair.items():
+            cells = latency_rows.get(pair)
+            if cells is None:
+                raise AuditError(f"leaderboard latency row missing: {pair[0]}/{pair[1]}")
+            expected = entry["public_stats"]["uncached_latency"]
+            displayed = [_first_number(cell) for cell in cells]
+            expected_display = [
+                round(expected["mean_s"], 2),
+                round(expected["p50_s"], 2),
+                round(expected["p95_s"], 2),
+            ]
+            if any(
+                not _close(actual, wanted) for actual, wanted in zip(displayed, expected_display)
+            ):
+                raise AuditError(f"leaderboard latency mismatch: {pair[0]}/{pair[1]}")
+
+    if readme_path is not None:
+        readme = readme_path.read_text(encoding="utf-8")
+        results_table = _markdown_table(readme, "## Results")
+        task_names = manifest["scope"]["task_order"]
+        for model_id in expected_models:
+            cells = _find_model_row(results_table, model_id)
+            task_scores = [
+                float(entries_by_pair[(model_id, task_name)]["aggregate_from_raw_rows"]["score"])
+                for task_name in task_names
+            ]
+            expected_values = [round(value, 3) for value in task_scores]
+            expected_values.append(round(sum(task_scores) / len(task_scores), 3))
+            displayed_values = [_first_number(cell) for cell in cells[: len(expected_values)]]
+            if any(
+                not _close(actual, expected)
+                for actual, expected in zip(displayed_values, expected_values)
+            ):
+                raise AuditError(f"README result mismatch: {model_id}")
+
     return {
         "models": len(expected_models),
         "tasks": len(expected_tasks),
         "files": len(file_entries),
         "rows": verified_rows,
         "leaderboard_checked": leaderboard_path is not None,
+        "readme_checked": readme_path is not None,
     }

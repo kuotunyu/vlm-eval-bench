@@ -34,7 +34,7 @@
         },
         "unique_sample_count": 200
       },
-      "sha256": "383cc4c4f34fac0663d6cafa073aac42bf2a6cbe37add54cdf0e58aef3355d86",
+      "sha256": "45a1d3a9273ef2120806b1efa3d60a6e51b463b151c745dee119ec06b44e524e",
       "source_prediction_path": "results/predictions/qwen3vl-8b-base__docvqa.jsonl",
       "source_prediction_sha256": "38391eb449df30a0eadcde91456de581a27dd95b1e702d5ddafbcdd8011b1e15",
       "task": "docvqa"
@@ -69,7 +69,7 @@
         },
         "unique_sample_count": 200
       },
-      "sha256": "3b24635b1e14e2030a046b4811ec1c7fb6beb7e39f3c8313c9102409dbf07ece",
+      "sha256": "a2ed07f559d615bbad1b02ac94b95329e6d83eda797912514908351be179bb9a",
       "source_prediction_path": "results/predictions/qwen3vl-8b-base__chartqa.jsonl",
       "source_prediction_sha256": "6c2eb8d1d2823b2014750b0d83b1cc330a07592aa5650c1d6be3b0f59219f8d3",
       "task": "chartqa"
@@ -160,7 +160,7 @@
         },
         "unique_sample_count": 100
       },
-      "sha256": "6574e469400407cc56733581e2f659e6e506d903513195747cff1c51038f0ce1",
+      "sha256": "50e44cd8ee49d6cc27dca6722d4ed7805a70d69b59e45862d3b80de1a814cc91",
       "source_prediction_path": "results/predictions/qwen3vl-8b-base__cord.jsonl",
       "source_prediction_sha256": "629bae1a2dbe97c6cb221355a24d006b19c178c8a34312661865282c308fdcba",
       "task": "cord"
@@ -193,7 +193,7 @@
         },
         "unique_sample_count": 200
       },
-      "sha256": "9b31cfcbdc7fdb2c3ec56ee0ebf39f13045ea0c8a4725c74025f78b0a981bc2f",
+      "sha256": "647cdb6abd6d6b26ca2bf2cfb5e87ebd25dfb7f48a1dfa539fe260cf19dc19b5",
       "source_prediction_path": "results/predictions/qwen3vl-8b-receipt-qlora__docvqa.jsonl",
       "source_prediction_sha256": "68218fa349a1be2c9052b283adc46c3f84e70b100ac6c3a99b8d0bbe1842219c",
       "task": "docvqa"
@@ -228,7 +228,7 @@
         },
         "unique_sample_count": 200
       },
-      "sha256": "3b14f6d50b01cbe64579aa94ff03a944ab6b2f6d0d8101624705172a6ed9f448",
+      "sha256": "4c607cada15ae69a468782f91508aa93dfba001d0f96c5594b1d3c36148fe1f4",
       "source_prediction_path": "results/predictions/qwen3vl-8b-receipt-qlora__chartqa.jsonl",
       "source_prediction_sha256": "8115bd60291e5ebca7cd4e60792e8bccfff229dbf7bffb5f0b786653c9ca8636",
       "task": "chartqa"
@@ -319,7 +319,7 @@
         },
         "unique_sample_count": 100
       },
-      "sha256": "4bd4be99e95af3c36ccf76399ae99bb4b3796fb55fab6fbfe2f54799e292c185",
+      "sha256": "fea4dbcb9bde30b711ea453eb01712a03acee1cea6f78ca7ee278a14f4291f96",
       "source_prediction_path": "results/predictions/qwen3vl-8b-receipt-qlora__cord.jsonl",
       "source_prediction_sha256": "2c353db4e721d993d03a83c5f598e169018782feb6af15fd297a8bbdf39f9faf",
       "task": "cord"
@@ -352,7 +352,7 @@
         },
         "unique_sample_count": 200
       },
-      "sha256": "f3dbdb192af7d1e08118c229cde64a68b9eebb27d5206f84750f00606327d9fc",
+      "sha256": "48d8b825e02f1bd877e6b6633f0e9fc63a90240e0adbb573745344f0ef5cbf9a",
       "source_prediction_path": "results/predictions/gemini-3.1-flash-lite__docvqa.jsonl",
       "source_prediction_sha256": "6605d99b8eec48c9d941ee2cdfce05bc6540686922d30e227e86d9c3d5e9e71e",
       "task": "docvqa"
@@ -387,7 +387,7 @@
         },
         "unique_sample_count": 200
       },
-      "sha256": "4f0f514b0d8ed26f828076f0b352db0cf24465e5180d67cbd87a9a95b4fa2654",
+      "sha256": "9a97bb10197f7e9a674ebb8a2e3be49690a1ef7fb319c18ba5a76b710b600a07",
       "source_prediction_path": "results/predictions/gemini-3.1-flash-lite__chartqa.jsonl",
       "source_prediction_sha256": "ff1a2f94ae1298af829802afa440ef21b3e948b7e10173451aa70a1aff883601",
       "task": "chartqa"
@@ -478,7 +478,7 @@
         },
         "unique_sample_count": 100
       },
-      "sha256": "cf2cd1c5807c1a29a91591f5b6d6b4741f4466d26fadb9d3973faef6528e7861",
+      "sha256": "be32b98c7f60bd7d3325c800a9500dc3bcd36151541efa769e0d048ffa0b74c4",
       "source_prediction_path": "results/predictions/gemini-3.1-flash-lite__cord.jsonl",
       "source_prediction_sha256": "af79d0eff571a7114d802e1e3f7c434e0fa9283642c4ef3eec6e9b1f9b59aecb",
       "task": "cord"
@@ -511,7 +511,7 @@
         },
         "unique_sample_count": 200
       },
-      "sha256": "2166dad2c364d4e853fed37a43ca4603b35fbeffdaca8e526a054bb66b6fe019",
+      "sha256": "51809d134f734f5e8808413afee464d1e7b7df6e6d9cb54b829bd6454fabf788",
       "source_prediction_path": "results/predictions/gpt-5.4-mini__docvqa.jsonl",
       "source_prediction_sha256": "525d9c004c2d003833f372edeb02607e1a18c1894b2a5f0d886e83cc99af6e2f",
       "task": "docvqa"
@@ -546,7 +546,7 @@
         },
         "unique_sample_count": 200
       },
-      "sha256": "e840a1f3b21f2e7b0f7747e4e3b6b80c61c9a4f12c49c205edabb41cdbfe70e8",
+      "sha256": "4be276fa74a9879a4179d0b4f1c9f242eda797eff85c7fbb684d907bea68047b",
       "source_prediction_path": "results/predictions/gpt-5.4-mini__chartqa.jsonl",
       "source_prediction_sha256": "25c14374924d83bba0f3866a390b2857825c40d085b523e2b6ba9af87b744df6",
       "task": "chartqa"
@@ -637,7 +637,7 @@
         },
         "unique_sample_count": 100
       },
-      "sha256": "e5f6c08a87f5ff2ba85b84095ce7f7c4d39f34a6149aa6130a06eccfe4e51df3",
+      "sha256": "330a93118ab4fa1628ab0d461e0127c61465182bc636c73ca7f8209e03c3f1c5",
       "source_prediction_path": "results/predictions/gpt-5.4-mini__cord.jsonl",
       "source_prediction_sha256": "d77d3c7c60e67f1ded7022c833111374879b1c37f00704ed8fc47fe6f6b5d707",
       "task": "cord"
@@ -645,13 +645,44 @@
   ],
   "generator": {
     "command": "uv run python scripts/build_audit_pack.py",
-    "deduplication": "Last JSONL row wins for each sample_id; first-seen sample order is preserved (identical to the leaderboard reporter)."
+    "deduplication": "Last JSONL row wins for each sample_id; first-seen sample order is preserved (identical to the leaderboard reporter).",
+    "redaction": "Public rows omit model predictions and all dataset/provider payloads; only verification fields are retained."
   },
   "hardware_and_method": {
     "api_models": "Provider round-trip latency and returned billed usage from the run.",
     "cost": "Local dollars are imputed at $0.35/hour from measured inference time; API dollars use provider-returned usage and config pricing.",
     "local_models": "RTX 4090, WSL2, 4-bit, batch size 1; no network latency."
   },
+  "published_artifacts": [
+    {
+      "path": "README.md",
+      "sha256": "0d7923c1fbbc89cee009ae72578fb3e5e919ff027d72685b703657a2551543a9"
+    },
+    {
+      "path": "EVALUATION_CARD.md",
+      "sha256": "7a557da6bdcc9bf42753f4c541309116e25cfa922377fc69a8dfd727b74f526a"
+    },
+    {
+      "path": "results/leaderboard.md",
+      "sha256": "7afbd3c23f3828cf7443789e6c51d9d832248b1ffc17b36f36ca35afb46a87b8"
+    },
+    {
+      "path": "results/audit/README.md",
+      "sha256": "19a52cc9018387aebbd314495005bf9cabe6d52ec2ca71f328facaf288292243"
+    },
+    {
+      "path": "results/charts/scores_by_task.png",
+      "sha256": "a4d1e7cf95e1504832da4c6b3093f5ad1695e4fbef23ff7ea549f36396240342"
+    },
+    {
+      "path": "results/charts/latency_p50_p95.png",
+      "sha256": "5e71c6810dad477b58e75b4842e01d85868b95086ecc63e70a32b416ceec44e9"
+    },
+    {
+      "path": "results/charts/cord_f1_breakdown.png",
+      "sha256": "8a1001145960a207912b76bb9a8fd7d7cd26f85e9263c2b1d538f2eba17a7b49"
+    }
+  ],
   "sample_manifests": {
     "chartqa": {
       "path": "data/samples/chartqa_seed3407.json",
@@ -666,7 +697,7 @@
       "sha256": "4034432774b2ee698af553b066ce0aa90e78ea95fd3ef115e688e8eda71fd99c"
     }
   },
-  "schema_version": 1,
+  "schema_version": 2,
   "scope": {
     "excluded_models": [
       "gemini-2.5-flash-lite (disabled, incomplete free-tier run)",
@@ -691,7 +722,7 @@
     "total_rows": 2000
   },
   "verification_boundary": [
-    "Dataset images, prompts, and references are intentionally excluded from this pack.",
+    "Dataset images, questions/prompts, references, model predictions, API keys, and raw provider responses are intentionally excluded from this pack.",
     "DocVQA and ChartQA mean scores, all row counts, costs, token totals, errors, and uncached latency summaries are independently recomputable from the pack.",
     "CORD uses corpus-level micro F1 and bootstrap intervals, which require references. Those aggregate values are recorded with hashes of the ignored raw sources, but cannot be independently rescored from this license-safe pack alone."
   ]
