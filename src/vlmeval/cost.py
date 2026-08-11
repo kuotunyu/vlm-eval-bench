@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import threading
 from dataclasses import dataclass
 from typing import Callable
@@ -89,6 +90,11 @@ class CostMeter:
 
     def add(self, cost_usd: float | None, cached: bool = False) -> bool:
         """Record one response's cost. Returns False once the cap is exceeded."""
+        if cost_usd is not None:
+            if isinstance(cost_usd, bool) or not isinstance(cost_usd, (int, float)):
+                raise TypeError("cost_usd must be numeric or None")
+            if not math.isfinite(cost_usd) or cost_usd < 0:
+                raise ValueError("cost_usd must be finite and non-negative")
         with self._lock:
             if cost_usd:
                 if cached:

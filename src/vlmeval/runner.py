@@ -101,11 +101,23 @@ async def _run_model_task(
             }
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
             f.flush()
-            if not meter.add(resp.cost_usd, cached=resp.cached):
+            billed_cost = None if model.cfg.is_local else resp.cost_usd
+            if not meter.add(billed_cost, cached=resp.cached):
                 stop = True
             pbar.update(1)
 
-        await asyncio.gather(*(one(s) for s in todo))
+        pending = iter(todo)
+
+        async def worker() -> None:
+            while not stop:
+                try:
+                    sample = next(pending)
+                except StopIteration:
+                    return
+                await one(sample)
+
+        worker_count = min(model.cfg.rate_limit.concurrency, len(todo))
+        await asyncio.gather(*(worker() for _ in range(worker_count)))
     pbar.close()
 
     if stop:
@@ -201,9 +213,22 @@ def run(
             samples = task_samples[t.name]
             params = t.gen_params()
             gp = _cache_params_for(cfg, params)
-            n_cached = sum(
-                cache.has(ResponseCache.make_key(mc.id, t.name, s.sample_id, s.prompt, gp))
-                for s in samples
+            n_cached = (
+                0
+                if no_cache
+                else sum(
+                    cache.has(
+                        ResponseCache.make_key(
+                            mc.id,
+                            t.name,
+                            s.sample_id,
+                            s.prompt,
+                            s.image_jpeg,
+                            gp,
+                        )
+                    )
+                    for s in samples
+                )
             )
             avg_chars = sum(len(s.prompt) for s in samples) / len(samples) if samples else 0
             est_rows.append(

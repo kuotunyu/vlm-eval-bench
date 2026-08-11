@@ -1,8 +1,8 @@
 """SQLite response cache — reruns never re-hit APIs.
 
 Cache key = sha256 over the canonical JSON of (model_id, task, sample_id,
-prompt hash, generation params incl. the image-preparation policy). Errors are
-never written, so failed samples are retried on the next run.
+prompt hash, prepared-image hash, generation params incl. the image-preparation
+policy). Errors are never written, so failed samples are retried on the next run.
 """
 
 from __future__ import annotations
@@ -52,6 +52,10 @@ def _sha256(s: str) -> str:
     return hashlib.sha256(s.encode("utf-8")).hexdigest()
 
 
+def _sha256_bytes(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest()
+
+
 class ResponseCache:
     def __init__(self, path: str | Path):
         path = Path(path)
@@ -64,9 +68,23 @@ class ResponseCache:
         self._lock = threading.Lock()
 
     @staticmethod
-    def make_key(model_id: str, task: str, sample_id: str, prompt: str, gen_params: dict) -> str:
+    def make_key(
+        model_id: str,
+        task: str,
+        sample_id: str,
+        prompt: str,
+        image_jpeg: bytes,
+        gen_params: dict,
+    ) -> str:
         payload = json.dumps(
-            {"m": model_id, "t": task, "s": sample_id, "p": _sha256(prompt), "g": gen_params},
+            {
+                "m": model_id,
+                "t": task,
+                "s": sample_id,
+                "p": _sha256(prompt),
+                "i": _sha256_bytes(image_jpeg),
+                "g": gen_params,
+            },
             sort_keys=True,
         )
         return _sha256(payload)

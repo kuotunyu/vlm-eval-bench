@@ -1,5 +1,7 @@
 from vlmeval.config import AppConfig, ModelConfig, RunConfig, TaskConfig
-from vlmeval.reporting import _analysis_lines, _complete_model_ids
+import json
+
+from vlmeval.reporting import _analysis_lines, _complete_model_ids, _dedup_rows
 
 
 def _cfg():
@@ -75,3 +77,20 @@ def test_analysis_is_data_driven_and_has_no_placeholder():
     assert "qwen3vl-8b-receipt-qlora" in text
     assert "CORD +0.220" in text
     assert "to be written" not in text
+
+
+def test_report_input_order_is_canonical_after_latest_row_deduplication(tmp_path):
+    first = tmp_path / "first.jsonl"
+    second = tmp_path / "second.jsonl"
+    rows = [
+        {"sample_id": "b", "score": 0.5},
+        {"sample_id": "a", "score": 1.0},
+    ]
+    first.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
+    second.write_text(
+        "".join(json.dumps(row) + "\n" for row in reversed(rows)),
+        encoding="utf-8",
+    )
+
+    assert _dedup_rows(first) == _dedup_rows(second)
+    assert [row["sample_id"] for row in _dedup_rows(first)] == ["a", "b"]

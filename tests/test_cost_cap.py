@@ -61,6 +61,16 @@ def test_cost_meter_cached_spend_tracked_separately():
     assert not meter.exceeded
 
 
+@pytest.mark.parametrize("invalid", [True, -0.01, float("nan"), "0.10"])
+def test_cost_meter_rejects_invalid_amounts(invalid):
+    meter = CostMeter(cap_usd=1.0)
+
+    with pytest.raises((TypeError, ValueError)):
+        meter.add(invalid)
+
+    assert meter.spent_usd == 0.0
+
+
 def test_format_estimate_table_smoke():
     rows = [EstimateRow("api-model", "docvqa", 20, 5, 0.021)]
     out = format_estimate_table(rows, cap=10.0)

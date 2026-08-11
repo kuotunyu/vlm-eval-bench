@@ -1,14 +1,14 @@
 # vlm-eval-bench configuration
-# Prices verified 2026-07-09 against each provider's official pricing page.
+# Pricing inputs for future runs; verify them again before any paid evaluation.
 
 run:
   seed: 3407
-  cost_cap_usd: 10.0
+  cost_cap_usd: 10.0                 # paid API spend only; local imputed cost is excluded
   output_dir: results
   cache_db: results/cache.sqlite      # if SQLite locking misbehaves on /mnt/c, point this at a WSL ext4 path
   image_max_side: 1280                # identical downscale policy for ALL models (fairness); part of cache key
   jpeg_quality: 90                    # part of cache key
-  max_retries: 3                      # outer retries on top of SDK built-in retries
+  max_retries: 3                      # total attempts, including the first call
   bootstrap_iters: 2000
   gpu_rent_usd_per_hour: 0.35         # RTX 4090 cloud-rental rate used to impute local-model cost (flagged in report)
 
@@ -76,10 +76,8 @@ models:
   - id: gpt-5.4-mini
     provider: openai
     model_id: gpt-5.4-mini
-    # $0.75 / $4.50 per 1M input/output tokens; image input $0.80 per 1M
-    # (usage does not split image vs text input tokens -> image share computed
-    #  from the documented tile formula; approximation disclosed in README)
-    pricing: { input_per_mtok: 0.75, output_per_mtok: 4.50, image_input_per_mtok: 0.80 }
+    # $0.75 / $4.50 per 1M input/output tokens; image token units use the input rate.
+    pricing: { input_per_mtok: 0.75, output_per_mtok: 4.50 }
     est_image_tokens: 1100
     rate_limit: { concurrency: 8, rpm: 120 }
     enabled: true
