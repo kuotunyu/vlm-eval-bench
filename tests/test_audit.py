@@ -52,7 +52,7 @@ def test_audit_gzip_is_deterministic_and_excludes_dataset_fields(tmp_path):
     path.write_bytes(first)
     published = read_audit_rows(path)
     assert len(published) == 2
-    assert not ({"prompt", "reference", "image", "meta", "aux"} & published[0].keys())
+    assert not ({"prompt", "reference", "image", "meta", "aux", "prediction"} & published[0].keys())
 
 
 def test_unexpected_audit_field_is_rejected(tmp_path):
@@ -80,10 +80,25 @@ def test_unexpected_audit_field_is_rejected(tmp_path):
         read_audit_rows(path)
 
 
+def test_non_finite_audit_score_is_rejected(tmp_path):
+    import gzip
+
+    path = tmp_path / "audit.jsonl.gz"
+    path.write_bytes(serialize_audit_rows([_row("a")]))
+    published = read_audit_rows(path)[0]
+    published["score"] = float("nan")
+    with gzip.open(path, "wt", encoding="utf-8") as stream:
+        stream.write(json.dumps(published) + "\n")
+
+    with pytest.raises(AuditError, match="score"):
+        read_audit_rows(path)
+
+
 def test_committed_pack_has_expected_coverage_and_matches_leaderboard():
     summary = verify_audit_pack(
         audit_dir=Path("results/audit"),
         leaderboard_path=Path("results/leaderboard.md"),
+        readme_path=Path("README.md"),
     )
 
     assert summary == {
@@ -92,4 +107,15 @@ def test_committed_pack_has_expected_coverage_and_matches_leaderboard():
         "files": 12,
         "rows": 2000,
         "leaderboard_checked": True,
+        "readme_checked": True,
     }
+
+
+def test_leaderboard_confidence_interval_tampering_is_rejected(tmp_path):
+    leaderboard = Path("results/leaderboard.md").read_text(encoding="utf-8")
+    tampered = leaderboard.replace("[0.905, 0.964]", "[0.000, 0.000]", 1)
+    path = tmp_path / "leaderboard.md"
+    path.write_text(tampered, encoding="utf-8")
+
+    with pytest.raises(AuditError, match="confidence interval"):
+        verify_audit_pack(Path("results/audit"), path)
