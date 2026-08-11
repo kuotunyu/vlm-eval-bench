@@ -1,0 +1,54 @@
+# secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+secrets*.json
+
+# local agent instructions
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+.claude/
+.codex/
+/plan.md
+/docs/superpowers/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.uv-cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# unsloth writes a compile cache into cwd
+unsloth_compiled_cache/
+
+# model weights and local dataset material
+*.bin
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+data/cache/
+data/downloads/
+data/raw/
+
+# run artifacts: cache DB / raw predictions / per-run summaries stay local;
+# leaderboard.md and charts/ ARE committed
+results/cache.sqlite
+results/cache.sqlite-journal
+results/predictions/
+results/raw/
+results/summaries/
+
+# HF datasets are cached in the WSL home, never here — belt and braces
+hf_cache/

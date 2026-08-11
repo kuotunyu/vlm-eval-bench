@@ -1,0 +1,95 @@
+# vlm-eval-bench configuration
+# Prices verified 2026-07-09 against each provider's official pricing page.
+
+run:
+  seed: 3407
+  cost_cap_usd: 10.0
+  output_dir: results
+  cache_db: results/cache.sqlite      # if SQLite locking misbehaves on /mnt/c, point this at a WSL ext4 path
+  image_max_side: 1280                # identical downscale policy for ALL models (fairness); part of cache key
+  jpeg_quality: 90                    # part of cache key
+  max_retries: 3                      # outer retries on top of SDK built-in retries
+  bootstrap_iters: 2000
+  gpu_rent_usd_per_hour: 0.35         # RTX 4090 cloud-rental rate used to impute local-model cost (flagged in report)
+
+tasks:
+  - name: docvqa
+    hf_dataset: lmms-lab/DocVQA
+    hf_config: DocVQA
+    split: validation                 # 5,349 rows, each with an `answers` list
+    n_full: 200
+    n_mini: 20
+    max_output_tokens: 64
+    metric: anls                      # threshold 0.5
+
+  - name: chartqa
+    hf_dataset: HuggingFaceM4/ChartQA
+    split: test                       # 2,500 rows; stratified 50/50 by human_or_machine
+    stratify_field: human_or_machine
+    n_full: 200
+    n_mini: 20
+    max_output_tokens: 64
+    metric: relaxed_accuracy          # 5% numeric tolerance
+
+  - name: cord
+    hf_dataset: naver-clova-ix/cord-v2
+    split: test                       # only 100 rows -> run all (mini = first 20)
+    n_full: 100
+    n_mini: 20
+    max_output_tokens: 768
+    metric: cord_f1                   # vendored field-level micro F1 from vlm-receipt-extractor
+
+models:
+  - id: qwen3vl-8b-base
+    provider: local_unsloth
+    model_path: unsloth/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit
+    enabled: true
+    # cost: imputed from gpu_rent_usd_per_hour x inference wall time (flagged in leaderboard)
+
+  - id: qwen3vl-8b-receipt-qlora
+    provider: local_unsloth
+    model_path: betty0/vlm-receipt-extractor    # QLoRA adapter; Unsloth resolves base+adapter
+    enabled: true
+
+  - id: gemini-3.1-flash-lite
+    provider: gemini
+    model_id: gemini-3.1-flash-lite
+    # $0.25 / $1.50 per 1M input/output tokens; images billed as input tokens at the text rate
+    pricing: { input_per_mtok: 0.25, output_per_mtok: 1.50 }
+    est_image_tokens: 800             # pre-run estimate only; actual cost always from usage_metadata
+    # free-tier AI Studio keys have low RPM quotas; raise these on a paid tier
+    rate_limit: { concurrency: 2, rpm: 8 }
+    enabled: true
+
+  - id: gemini-2.5-flash-lite
+    provider: gemini
+    model_id: gemini-2.5-flash-lite
+    # Optional previous-gen comparison. The free project used for this portfolio is
+    # capped at 20 requests/day for this model, while the full benchmark needs 500.
+    # Keep it disabled unless running from a paid project; interrupted rows remain
+    # resume-safe and the reporter excludes disabled/incomplete models.
+    pricing: { input_per_mtok: 0.10, output_per_mtok: 0.40 }
+    est_image_tokens: 800
+    rate_limit: { concurrency: 2, rpm: 10 }
+    enabled: false
+
+  - id: gpt-5.4-mini
+    provider: openai
+    model_id: gpt-5.4-mini
+    # $0.75 / $4.50 per 1M input/output tokens; image input $0.80 per 1M
+    # (usage does not split image vs text input tokens -> image share computed
+    #  from the documented tile formula; approximation disclosed in README)
+    pricing: { input_per_mtok: 0.75, output_per_mtok: 4.50, image_input_per_mtok: 0.80 }
+    est_image_tokens: 1100
+    rate_limit: { concurrency: 8, rpm: 120 }
+    enabled: true
+
+  - id: claude-haiku-4-5
+    provider: anthropic
+    model_id: claude-haiku-4-5
+    # $1.00 / $5.00 per 1M input/output tokens; image tokens ~ (w*h)/750, already included in usage.input_tokens
+    pricing: { input_per_mtok: 1.00, output_per_mtok: 5.00 }
+    est_image_tokens: 1100
+    rate_limit: { concurrency: 4, rpm: 50 }
+    enabled: false                    # provider implemented & smoke-tested; disabled pending API billing
+                                      # flip to true and rerun (resume-safe) to add it to the leaderboard
