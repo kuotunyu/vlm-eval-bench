@@ -24,8 +24,9 @@ LOCAL_FLAG = "†"
 
 
 def _dedup_rows(path: Path) -> list[dict]:
-    """Latest row per sample_id, in first-seen order."""
-    return read_latest_rows(path) if path.exists() else []
+    """Latest row per sample_id, in canonical sample-id order."""
+    rows = read_latest_rows(path) if path.exists() else []
+    return sorted(rows, key=lambda row: str(row["sample_id"]))
 
 
 def _percentile(values: list[float], p: float) -> float:

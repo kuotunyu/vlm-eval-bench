@@ -7,9 +7,13 @@ def test_exact_match():
     assert anls_score("Paris", ["Paris"]) == 1.0
 
 
-def test_case_and_whitespace_insensitive():
+def test_case_and_edge_whitespace_insensitive():
     assert anls_score("  paris ", ["Paris"]) == 1.0
-    assert anls_score("new  york", ["New York"]) == 1.0
+
+
+def test_internal_whitespace_remains_significant():
+    # Official DocVQA ANLS is case-insensitive but space-sensitive.
+    assert anls_score("new  york", ["New York"]) == pytest.approx(8 / 9)
 
 
 def test_near_match_above_threshold():
@@ -21,6 +25,11 @@ def test_below_threshold_truncates_to_zero():
     # "abcdef" vs "abzzzz": 4 edits over 6 -> similarity 1/3 < 0.5 -> 0.0
     assert anls_score("abcdef", ["abzzzz"]) == 0.0
     assert anls_score("cat", ["dog"]) == 0.0
+
+
+def test_exact_threshold_truncates_to_zero():
+    # Normalized distance 0.5 is not strictly below the official threshold.
+    assert anls_score("ab", ["ac"]) == 0.0
 
 
 def test_multi_reference_takes_max():

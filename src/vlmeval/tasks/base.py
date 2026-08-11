@@ -84,11 +84,36 @@ class BaseTask(ABC):
         path = self.manifest_path()
         if path.exists():
             manifest = json.loads(path.read_text(encoding="utf-8"))
-            if manifest["dataset"] != self.cfg.hf_dataset or manifest["split"] != self.cfg.split:
+            expected_metadata = {
+                "dataset": self.cfg.hf_dataset,
+                "config": self.cfg.hf_config,
+                "split": self.cfg.split,
+                "seed": self.run_cfg.seed,
+            }
+            for field_name, expected in expected_metadata.items():
+                if manifest.get(field_name) != expected:
+                    raise RuntimeError(
+                        f"manifest {path} {field_name} does not match config; "
+                        "delete it to regenerate"
+                    )
+            n_rows = len(ds)
+            if manifest.get("n_rows_in_split") != n_rows:
+                raise RuntimeError(f"manifest {path} dataset row count does not match")
+            indices = manifest.get("indices")
+            if not isinstance(indices, list) or any(
+                not isinstance(index, int) or isinstance(index, bool) for index in indices
+            ):
+                raise RuntimeError(f"manifest {path} indices must be integers")
+            expected_count = min(self.cfg.n_full, n_rows)
+            if len(indices) != expected_count:
                 raise RuntimeError(
-                    f"manifest {path} does not match config; delete it to regenerate"
+                    f"manifest {path} index count must be {expected_count}, found {len(indices)}"
                 )
-            return manifest["indices"]
+            if len(indices) != len(set(indices)):
+                raise RuntimeError(f"manifest {path} contains duplicate indices")
+            if any(index < 0 or index >= n_rows for index in indices):
+                raise RuntimeError(f"manifest {path} index is outside dataset range")
+            return indices
         indices = self.select_indices(ds)
         manifest = {
             "dataset": self.cfg.hf_dataset,

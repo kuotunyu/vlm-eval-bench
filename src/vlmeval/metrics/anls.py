@@ -11,7 +11,7 @@ from rapidfuzz.distance import Levenshtein
 
 
 def _norm(s: str) -> str:
-    return " ".join(s.strip().lower().split())
+    return s.strip().lower()
 
 
 def anls_score(pred: str, answers: list[str], threshold: float = 0.5) -> float:
@@ -27,4 +27,4 @@ def anls_score(pred: str, answers: list[str], threshold: float = 0.5) -> float:
         else:
             sim = 1.0 - Levenshtein.normalized_distance(p, a_n)
         best = max(best, sim)
-    return best if best >= threshold else 0.0
+    return best if best > threshold else 0.0

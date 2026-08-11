@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -89,6 +90,79 @@ class AppConfig:
         return tuple(m for m in self.models if m.enabled)
 
 
+def _require_finite_non_negative(value: float, label: str) -> None:
+    if (
+        isinstance(value, bool)
+        or not isinstance(value, (int, float))
+        or not math.isfinite(value)
+        or value < 0
+    ):
+        raise ValueError(f"{label} must be a finite non-negative number")
+
+
+def validate_config(cfg: AppConfig) -> None:
+    """Reject unsafe or ambiguous configuration before loading data or providers."""
+    run = cfg.run
+    _require_finite_non_negative(run.cost_cap_usd, "run.cost_cap_usd")
+    _require_finite_non_negative(run.gpu_rent_usd_per_hour, "run.gpu_rent_usd_per_hour")
+    if not isinstance(run.seed, int) or isinstance(run.seed, bool):
+        raise ValueError("run.seed must be an integer")
+    if run.image_max_side < 1:
+        raise ValueError("run.image_max_side must be positive")
+    if not 1 <= run.jpeg_quality <= 100:
+        raise ValueError("run.jpeg_quality must be between 1 and 100")
+    if run.max_retries < 1:
+        raise ValueError("run.max_retries must be at least 1")
+    if run.bootstrap_iters < 1:
+        raise ValueError("run.bootstrap_iters must be at least 1")
+
+    if not cfg.tasks:
+        raise ValueError("at least one task is required")
+    task_names = [task.name for task in cfg.tasks]
+    if len(task_names) != len(set(task_names)):
+        raise ValueError("duplicate task name")
+    for task in cfg.tasks:
+        if not task.name or not task.hf_dataset or not task.split:
+            raise ValueError("task name, hf_dataset, and split must be non-empty")
+        if task.n_full < 1:
+            raise ValueError(f"task {task.name} n_full must be positive")
+        if not 1 <= task.n_mini <= task.n_full:
+            raise ValueError(f"task {task.name} n_mini must be between 1 and n_full")
+        if task.max_output_tokens < 1:
+            raise ValueError(f"task {task.name} max_output_tokens must be positive")
+
+    if not cfg.models:
+        raise ValueError("at least one model is required")
+    model_ids = [model.id for model in cfg.models]
+    if len(model_ids) != len(set(model_ids)):
+        raise ValueError("duplicate model id")
+    for model in cfg.models:
+        if not model.id or not model.provider:
+            raise ValueError("model id and provider must be non-empty")
+        if model.is_local and not model.model_path:
+            raise ValueError(f"local model {model.id} requires model_path")
+        if not model.is_local and not model.model_id:
+            raise ValueError(f"API model {model.id} requires model_id")
+        if model.est_image_tokens < 0:
+            raise ValueError(f"model {model.id} est_image_tokens must be non-negative")
+        if model.rate_limit.concurrency < 1:
+            raise ValueError(f"model {model.id} concurrency must be positive")
+        if model.rate_limit.rpm is not None and model.rate_limit.rpm < 1:
+            raise ValueError(f"model {model.id} rpm must be positive when set")
+        if model.pricing is not None:
+            _require_finite_non_negative(
+                model.pricing.input_per_mtok, f"model {model.id} input_per_mtok"
+            )
+            _require_finite_non_negative(
+                model.pricing.output_per_mtok, f"model {model.id} output_per_mtok"
+            )
+            if model.pricing.image_input_per_mtok is not None:
+                _require_finite_non_negative(
+                    model.pricing.image_input_per_mtok,
+                    f"model {model.id} image_input_per_mtok",
+                )
+
+
 def load_config(path: str | Path = "config.yaml") -> AppConfig:
     """Parse config.yaml into an AppConfig; also loads .env into the environment."""
     load_dotenv()
@@ -113,4 +187,6 @@ def load_config(path: str | Path = "config.yaml") -> AppConfig:
             m.pop("rate_limit", None)
         models.append(ModelConfig(**m))
 
-    return AppConfig(run=run, tasks=tasks, models=tuple(models))
+    config = AppConfig(run=run, tasks=tasks, models=tuple(models))
+    validate_config(config)
+    return config
