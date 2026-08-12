@@ -69,3 +69,14 @@ def test_invalid_configuration_is_rejected_before_execution(tmp_path, mutate, me
 
     with pytest.raises(ValueError, match=message):
         _load(tmp_path, raw)
+
+
+def test_offline_config_load_does_not_read_dotenv(tmp_path, monkeypatch):
+    path = tmp_path / "config.yaml"
+    path.write_text(yaml.safe_dump(_valid_config()), encoding="utf-8")
+    calls = []
+    monkeypatch.setattr("vlmeval.config.load_dotenv", lambda: calls.append(True))
+
+    load_config(path, load_environment=False)
+
+    assert calls == []

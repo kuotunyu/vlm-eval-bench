@@ -163,9 +163,10 @@ def validate_config(cfg: AppConfig) -> None:
                 )
 
 
-def load_config(path: str | Path = "config.yaml") -> AppConfig:
-    """Parse config.yaml into an AppConfig; also loads .env into the environment."""
-    load_dotenv()
+def load_config(path: str | Path = "config.yaml", *, load_environment: bool = True) -> AppConfig:
+    """Parse config.yaml; optionally load the local dotenv for inference commands."""
+    if load_environment:
+        load_dotenv()
     raw = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
 
     run_raw = dict(raw.get("run", {}))
