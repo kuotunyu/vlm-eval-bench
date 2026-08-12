@@ -655,20 +655,8 @@
   },
   "published_artifacts": [
     {
-      "path": "README.md",
-      "sha256": "0d7923c1fbbc89cee009ae72578fb3e5e919ff027d72685b703657a2551543a9"
-    },
-    {
-      "path": "EVALUATION_CARD.md",
-      "sha256": "7a557da6bdcc9bf42753f4c541309116e25cfa922377fc69a8dfd727b74f526a"
-    },
-    {
-      "path": "results/leaderboard.md",
+      "path": "results/archived_leaderboard.md",
       "sha256": "7afbd3c23f3828cf7443789e6c51d9d832248b1ffc17b36f36ca35afb46a87b8"
-    },
-    {
-      "path": "results/audit/README.md",
-      "sha256": "19a52cc9018387aebbd314495005bf9cabe6d52ec2ca71f328facaf288292243"
     },
     {
       "path": "results/charts/scores_by_task.png",

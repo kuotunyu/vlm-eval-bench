@@ -1,0 +1,1181 @@
+{
+  "comparisons": [
+    {
+      "changed_rows": 3,
+      "corrected_score": 0.9316,
+      "delta": -0.005,
+      "historical_score": 0.9366,
+      "model": "qwen3vl-8b-base",
+      "task": "docvqa"
+    },
+    {
+      "changed_rows": 0,
+      "corrected_score": 0.83,
+      "delta": 0.0,
+      "historical_score": 0.83,
+      "model": "qwen3vl-8b-base",
+      "task": "chartqa"
+    },
+    {
+      "changed_rows": 0,
+      "corrected_score": 0.7423,
+      "delta": 0.0,
+      "historical_score": 0.7423,
+      "model": "qwen3vl-8b-base",
+      "task": "cord"
+    },
+    {
+      "changed_rows": 2,
+      "corrected_score": 0.9188,
+      "delta": -0.0026,
+      "historical_score": 0.9214,
+      "model": "qwen3vl-8b-receipt-qlora",
+      "task": "docvqa"
+    },
+    {
+      "changed_rows": 1,
+      "corrected_score": 0.83,
+      "delta": -0.005,
+      "historical_score": 0.835,
+      "model": "qwen3vl-8b-receipt-qlora",
+      "task": "chartqa"
+    },
+    {
+      "changed_rows": 0,
+      "corrected_score": 0.9234,
+      "delta": 0.0,
+      "historical_score": 0.9234,
+      "model": "qwen3vl-8b-receipt-qlora",
+      "task": "cord"
+    },
+    {
+      "changed_rows": 2,
+      "corrected_score": 0.8795,
+      "delta": -0.0026,
+      "historical_score": 0.8821,
+      "model": "gemini-3.1-flash-lite",
+      "task": "docvqa"
+    },
+    {
+      "changed_rows": 46,
+      "corrected_score": 0.375,
+      "delta": -0.22,
+      "historical_score": 0.595,
+      "model": "gemini-3.1-flash-lite",
+      "task": "chartqa"
+    },
+    {
+      "changed_rows": 0,
+      "corrected_score": 0.8701,
+      "delta": 0.0,
+      "historical_score": 0.8701,
+      "model": "gemini-3.1-flash-lite",
+      "task": "cord"
+    },
+    {
+      "changed_rows": 4,
+      "corrected_score": 0.8546,
+      "delta": -0.0075,
+      "historical_score": 0.8621,
+      "model": "gpt-5.4-mini",
+      "task": "docvqa"
+    },
+    {
+      "changed_rows": 52,
+      "corrected_score": 0.29,
+      "delta": -0.26,
+      "historical_score": 0.55,
+      "model": "gpt-5.4-mini",
+      "task": "chartqa"
+    },
+    {
+      "changed_rows": 0,
+      "corrected_score": 0.8193,
+      "delta": 0.0,
+      "historical_score": 0.8193,
+      "model": "gpt-5.4-mini",
+      "task": "cord"
+    }
+  ],
+  "deduplication": "Last JSONL row wins per sample_id; first-seen sample order is preserved.",
+  "files": [
+    {
+      "corrected_aggregate": {
+        "ci95": [
+          0.8967,
+          0.9608
+        ],
+        "error_rate": 0.0,
+        "metric": "anls",
+        "n": 200,
+        "score": 0.9316
+      },
+      "historical_aggregate": {
+        "ci95": [
+          0.9049,
+          0.9635
+        ],
+        "error_rate": 0.0,
+        "metric": "anls",
+        "n": 200,
+        "score": 0.9366
+      },
+      "model": "qwen3vl-8b-base",
+      "path": "qwen3vl-8b-base__docvqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.016623930874,
+        "error_count": 0,
+        "input_tokens": 242832,
+        "output_tokens": 1365,
+        "per_sample_mean_score": 0.93158842,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 0.85494502,
+          "p50_s": 0.54768041,
+          "p95_s": 1.01587322
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "b793e745375e364da84d078c62d30117f9a2dcbaf28a0e758dd595623f37c49e",
+      "source": {
+        "filename": "qwen3vl-8b-base__docvqa.jsonl",
+        "latest_rows": 200,
+        "physical_rows": 200,
+        "sha256": "38391eb449df30a0eadcde91456de581a27dd95b1e702d5ddafbcdd8011b1e15"
+      },
+      "task": "docvqa"
+    },
+    {
+      "corrected_aggregate": {
+        "ci95": [
+          0.775,
+          0.88
+        ],
+        "error_rate": 0.0,
+        "human_accuracy": 0.71,
+        "machine_accuracy": 0.95,
+        "metric": "relaxed_accuracy",
+        "n": 200,
+        "score": 0.83
+      },
+      "historical_aggregate": {
+        "ci95": [
+          0.775,
+          0.88
+        ],
+        "error_rate": 0.0,
+        "human_accuracy": 0.71,
+        "machine_accuracy": 0.95,
+        "metric": "relaxed_accuracy",
+        "n": 200,
+        "score": 0.83
+      },
+      "model": "qwen3vl-8b-base",
+      "path": "qwen3vl-8b-base__chartqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.006237128854,
+        "error_count": 0,
+        "input_tokens": 92552,
+        "output_tokens": 892,
+        "per_sample_mean_score": 0.83,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 0.32076663,
+          "p50_s": 0.31577494,
+          "p95_s": 0.48581573
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "a2ed07f559d615bbad1b02ac94b95329e6d83eda797912514908351be179bb9a",
+      "source": {
+        "filename": "qwen3vl-8b-base__chartqa.jsonl",
+        "latest_rows": 200,
+        "physical_rows": 200,
+        "sha256": "6c2eb8d1d2823b2014750b0d83b1cc330a07592aa5650c1d6be3b0f59219f8d3"
+      },
+      "task": "chartqa"
+    },
+    {
+      "corrected_aggregate": {
+        "ci95": [
+          0.7037,
+          0.7719
+        ],
+        "error_rate": 0.0,
+        "fields": {
+          "discount": {
+            "f1": 0.2778,
+            "precision": 0.1667,
+            "recall": 0.8333,
+            "support": 6
+          },
+          "items.count": {
+            "f1": 0.9433,
+            "precision": 0.9066,
+            "recall": 0.9831,
+            "support": 237
+          },
+          "items.name": {
+            "f1": 0.7523,
+            "precision": 0.782,
+            "recall": 0.7247,
+            "support": 287
+          },
+          "items.price": {
+            "f1": 0.8571,
+            "precision": 0.8571,
+            "recall": 0.8571,
+            "support": 266
+          },
+          "items.unit_price": {
+            "f1": 0.3123,
+            "precision": 0.1955,
+            "recall": 0.7761,
+            "support": 67
+          },
+          "service": {
+            "f1": 0.5581,
+            "precision": 0.3871,
+            "recall": 1.0,
+            "support": 12
+          },
+          "subtotal": {
+            "f1": 0.7273,
+            "precision": 0.6,
+            "recall": 0.9231,
+            "support": 65
+          },
+          "tax": {
+            "f1": 0.7073,
+            "precision": 0.7073,
+            "recall": 0.7073,
+            "support": 41
+          },
+          "total": {
+            "f1": 0.7795,
+            "precision": 0.76,
+            "recall": 0.8,
+            "support": 95
+          }
+        },
+        "metric": "cord_f1",
+        "n": 100,
+        "score": 0.7423,
+        "total_exact_match": 0.76,
+        "valid_json_rate": 1.0
+      },
+      "historical_aggregate": {
+        "ci95": [
+          0.7037,
+          0.7719
+        ],
+        "error_rate": 0.0,
+        "fields": {
+          "discount": {
+            "f1": 0.2778,
+            "precision": 0.1667,
+            "recall": 0.8333,
+            "support": 6
+          },
+          "items.count": {
+            "f1": 0.9433,
+            "precision": 0.9066,
+            "recall": 0.9831,
+            "support": 237
+          },
+          "items.name": {
+            "f1": 0.7523,
+            "precision": 0.782,
+            "recall": 0.7247,
+            "support": 287
+          },
+          "items.price": {
+            "f1": 0.8571,
+            "precision": 0.8571,
+            "recall": 0.8571,
+            "support": 266
+          },
+          "items.unit_price": {
+            "f1": 0.3123,
+            "precision": 0.1955,
+            "recall": 0.7761,
+            "support": 67
+          },
+          "service": {
+            "f1": 0.5581,
+            "precision": 0.3871,
+            "recall": 1.0,
+            "support": 12
+          },
+          "subtotal": {
+            "f1": 0.7273,
+            "precision": 0.6,
+            "recall": 0.9231,
+            "support": 65
+          },
+          "tax": {
+            "f1": 0.7073,
+            "precision": 0.7073,
+            "recall": 0.7073,
+            "support": 41
+          },
+          "total": {
+            "f1": 0.7795,
+            "precision": 0.76,
+            "recall": 0.8,
+            "support": 95
+          }
+        },
+        "metric": "cord_f1",
+        "n": 100,
+        "score": 0.7423,
+        "total_exact_match": 0.76,
+        "valid_json_rate": 1.0
+      },
+      "model": "qwen3vl-8b-base",
+      "path": "qwen3vl-8b-base__cord.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.097789976092,
+        "error_count": 0,
+        "input_tokens": 100989,
+        "output_tokens": 17198,
+        "per_sample_mean_score": 0.715464,
+        "row_count": 100,
+        "uncached_latency": {
+          "count": 98,
+          "mean_s": 9.5318394,
+          "p50_s": 7.56309113,
+          "p95_s": 23.16854676
+        },
+        "unique_sample_count": 100
+      },
+      "sha256": "50e44cd8ee49d6cc27dca6722d4ed7805a70d69b59e45862d3b80de1a814cc91",
+      "source": {
+        "filename": "qwen3vl-8b-base__cord.jsonl",
+        "latest_rows": 100,
+        "physical_rows": 100,
+        "sha256": "629bae1a2dbe97c6cb221355a24d006b19c178c8a34312661865282c308fdcba"
+      },
+      "task": "cord"
+    },
+    {
+      "corrected_aggregate": {
+        "ci95": [
+          0.8823,
+          0.9507
+        ],
+        "error_rate": 0.0,
+        "metric": "anls",
+        "n": 200,
+        "score": 0.9188
+      },
+      "historical_aggregate": {
+        "ci95": [
+          0.8869,
+          0.952
+        ],
+        "error_rate": 0.0,
+        "metric": "anls",
+        "n": 200,
+        "score": 0.9214
+      },
+      "model": "qwen3vl-8b-receipt-qlora",
+      "path": "qwen3vl-8b-receipt-qlora__docvqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.018418612981,
+        "error_count": 0,
+        "input_tokens": 242832,
+        "output_tokens": 1411,
+        "per_sample_mean_score": 0.91882915,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 0.94724295,
+          "p50_s": 0.73723727,
+          "p95_s": 1.53727968
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "a0a5cf1a438b2091fb1f5d96d8d8c3e23c87d1f497ec0defcf9849da12563781",
+      "source": {
+        "filename": "qwen3vl-8b-receipt-qlora__docvqa.jsonl",
+        "latest_rows": 200,
+        "physical_rows": 200,
+        "sha256": "68218fa349a1be2c9052b283adc46c3f84e70b100ac6c3a99b8d0bbe1842219c"
+      },
+      "task": "docvqa"
+    },
+    {
+      "corrected_aggregate": {
+        "ci95": [
+          0.775,
+          0.88
+        ],
+        "error_rate": 0.0,
+        "human_accuracy": 0.71,
+        "machine_accuracy": 0.95,
+        "metric": "relaxed_accuracy",
+        "n": 200,
+        "score": 0.83
+      },
+      "historical_aggregate": {
+        "ci95": [
+          0.78,
+          0.885
+        ],
+        "error_rate": 0.0,
+        "human_accuracy": 0.72,
+        "machine_accuracy": 0.95,
+        "metric": "relaxed_accuracy",
+        "n": 200,
+        "score": 0.835
+      },
+      "model": "qwen3vl-8b-receipt-qlora",
+      "path": "qwen3vl-8b-receipt-qlora__chartqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.010101491498,
+        "error_count": 0,
+        "input_tokens": 92552,
+        "output_tokens": 994,
+        "per_sample_mean_score": 0.83,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 0.51950528,
+          "p50_s": 0.49639981,
+          "p95_s": 0.75748266
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "d461770012d65252f86d34cfa9c981b2f6f03b60d949fab77857aaa514716498",
+      "source": {
+        "filename": "qwen3vl-8b-receipt-qlora__chartqa.jsonl",
+        "latest_rows": 200,
+        "physical_rows": 200,
+        "sha256": "8115bd60291e5ebca7cd4e60792e8bccfff229dbf7bffb5f0b786653c9ca8636"
+      },
+      "task": "chartqa"
+    },
+    {
+      "corrected_aggregate": {
+        "ci95": [
+          0.8915,
+          0.95
+        ],
+        "error_rate": 0.0,
+        "fields": {
+          "discount": {
+            "f1": 0.8571,
+            "precision": 0.75,
+            "recall": 1.0,
+            "support": 6
+          },
+          "items.count": {
+            "f1": 0.9769,
+            "precision": 0.9708,
+            "recall": 0.9831,
+            "support": 237
+          },
+          "items.name": {
+            "f1": 0.8715,
+            "precision": 0.8685,
+            "recall": 0.8746,
+            "support": 287
+          },
+          "items.price": {
+            "f1": 0.9211,
+            "precision": 0.9211,
+            "recall": 0.9211,
+            "support": 266
+          },
+          "items.unit_price": {
+            "f1": 0.9118,
+            "precision": 0.8986,
+            "recall": 0.9254,
+            "support": 67
+          },
+          "service": {
+            "f1": 0.9167,
+            "precision": 0.9167,
+            "recall": 0.9167,
+            "support": 12
+          },
+          "subtotal": {
+            "f1": 0.9474,
+            "precision": 0.9265,
+            "recall": 0.9692,
+            "support": 65
+          },
+          "tax": {
+            "f1": 0.9756,
+            "precision": 0.9756,
+            "recall": 0.9756,
+            "support": 41
+          },
+          "total": {
+            "f1": 0.9271,
+            "precision": 0.9175,
+            "recall": 0.9368,
+            "support": 95
+          }
+        },
+        "metric": "cord_f1",
+        "n": 100,
+        "score": 0.9234,
+        "total_exact_match": 0.9,
+        "valid_json_rate": 1.0
+      },
+      "historical_aggregate": {
+        "ci95": [
+          0.8915,
+          0.95
+        ],
+        "error_rate": 0.0,
+        "fields": {
+          "discount": {
+            "f1": 0.8571,
+            "precision": 0.75,
+            "recall": 1.0,
+            "support": 6
+          },
+          "items.count": {
+            "f1": 0.9769,
+            "precision": 0.9708,
+            "recall": 0.9831,
+            "support": 237
+          },
+          "items.name": {
+            "f1": 0.8715,
+            "precision": 0.8685,
+            "recall": 0.8746,
+            "support": 287
+          },
+          "items.price": {
+            "f1": 0.9211,
+            "precision": 0.9211,
+            "recall": 0.9211,
+            "support": 266
+          },
+          "items.unit_price": {
+            "f1": 0.9118,
+            "precision": 0.8986,
+            "recall": 0.9254,
+            "support": 67
+          },
+          "service": {
+            "f1": 0.9167,
+            "precision": 0.9167,
+            "recall": 0.9167,
+            "support": 12
+          },
+          "subtotal": {
+            "f1": 0.9474,
+            "precision": 0.9265,
+            "recall": 0.9692,
+            "support": 65
+          },
+          "tax": {
+            "f1": 0.9756,
+            "precision": 0.9756,
+            "recall": 0.9756,
+            "support": 41
+          },
+          "total": {
+            "f1": 0.9271,
+            "precision": 0.9175,
+            "recall": 0.9368,
+            "support": 95
+          }
+        },
+        "metric": "cord_f1",
+        "n": 100,
+        "score": 0.9234,
+        "total_exact_match": 0.9,
+        "valid_json_rate": 1.0
+      },
+      "model": "qwen3vl-8b-receipt-qlora",
+      "path": "qwen3vl-8b-receipt-qlora__cord.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.090843917016,
+        "error_count": 0,
+        "input_tokens": 100989,
+        "output_tokens": 10966,
+        "per_sample_mean_score": 0.925499,
+        "row_count": 100,
+        "uncached_latency": {
+          "count": 100,
+          "mean_s": 9.34394575,
+          "p50_s": 7.56323875,
+          "p95_s": 21.53223591
+        },
+        "unique_sample_count": 100
+      },
+      "sha256": "fea4dbcb9bde30b711ea453eb01712a03acee1cea6f78ca7ee278a14f4291f96",
+      "source": {
+        "filename": "qwen3vl-8b-receipt-qlora__cord.jsonl",
+        "latest_rows": 100,
+        "physical_rows": 100,
+        "sha256": "2c353db4e721d993d03a83c5f598e169018782feb6af15fd297a8bbdf39f9faf"
+      },
+      "task": "cord"
+    },
+    {
+      "corrected_aggregate": {
+        "ci95": [
+          0.8361,
+          0.918
+        ],
+        "error_rate": 0.0,
+        "metric": "anls",
+        "n": 200,
+        "score": 0.8795
+      },
+      "historical_aggregate": {
+        "ci95": [
+          0.8404,
+          0.9211
+        ],
+        "error_rate": 0.0,
+        "metric": "anls",
+        "n": 200,
+        "score": 0.8821
+      },
+      "model": "gemini-3.1-flash-lite",
+      "path": "gemini-3.1-flash-lite__docvqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.05715475,
+        "error_count": 0,
+        "input_tokens": 221941,
+        "output_tokens": 1113,
+        "per_sample_mean_score": 0.8794965,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 1.25948558,
+          "p50_s": 1.17067995,
+          "p95_s": 1.65369673
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "73d181bb7d0a5e030cb29ca6e118aa39660dd13710de329366925c1c9833ad66",
+      "source": {
+        "filename": "gemini-3.1-flash-lite__docvqa.jsonl",
+        "latest_rows": 200,
+        "physical_rows": 202,
+        "sha256": "6605d99b8eec48c9d941ee2cdfce05bc6540686922d30e227e86d9c3d5e9e71e"
+      },
+      "task": "docvqa"
+    },
+    {
+      "corrected_aggregate": {
+        "ci95": [
+          0.315,
+          0.44
+        ],
+        "error_rate": 0.0,
+        "human_accuracy": 0.41,
+        "machine_accuracy": 0.34,
+        "metric": "relaxed_accuracy",
+        "n": 200,
+        "score": 0.375
+      },
+      "historical_aggregate": {
+        "ci95": [
+          0.525,
+          0.665
+        ],
+        "error_rate": 0.0,
+        "human_accuracy": 0.65,
+        "machine_accuracy": 0.54,
+        "metric": "relaxed_accuracy",
+        "n": 200,
+        "score": 0.595
+      },
+      "model": "gemini-3.1-flash-lite",
+      "path": "gemini-3.1-flash-lite__chartqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.056902,
+        "error_count": 0,
+        "input_tokens": 221860,
+        "output_tokens": 958,
+        "per_sample_mean_score": 0.375,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 1.06918117,
+          "p50_s": 1.03268278,
+          "p95_s": 1.32025843
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "b4fc7aa6ae039eba233bc5fa25cdb48d1485bef894a57656e5353f38fa372654",
+      "source": {
+        "filename": "gemini-3.1-flash-lite__chartqa.jsonl",
+        "latest_rows": 200,
+        "physical_rows": 203,
+        "sha256": "ff1a2f94ae1298af829802afa440ef21b3e948b7e10173451aa70a1aff883601"
+      },
+      "task": "chartqa"
+    },
+    {
+      "corrected_aggregate": {
+        "ci95": [
+          0.846,
+          0.8928
+        ],
+        "error_rate": 0.0,
+        "fields": {
+          "discount": {
+            "f1": 0.625,
+            "precision": 0.5,
+            "recall": 0.8333,
+            "support": 6
+          },
+          "items.count": {
+            "f1": 0.9831,
+            "precision": 0.9872,
+            "recall": 0.9789,
+            "support": 237
+          },
+          "items.name": {
+            "f1": 0.818,
+            "precision": 0.847,
+            "recall": 0.7909,
+            "support": 287
+          },
+          "items.price": {
+            "f1": 0.9474,
+            "precision": 0.9474,
+            "recall": 0.9474,
+            "support": 266
+          },
+          "items.unit_price": {
+            "f1": 0.4942,
+            "precision": 0.3333,
+            "recall": 0.9552,
+            "support": 67
+          },
+          "service": {
+            "f1": 0.96,
+            "precision": 0.9231,
+            "recall": 1.0,
+            "support": 12
+          },
+          "subtotal": {
+            "f1": 0.9624,
+            "precision": 0.9412,
+            "recall": 0.9846,
+            "support": 65
+          },
+          "tax": {
+            "f1": 0.9524,
+            "precision": 0.9302,
+            "recall": 0.9756,
+            "support": 41
+          },
+          "total": {
+            "f1": 0.9436,
+            "precision": 0.92,
+            "recall": 0.9684,
+            "support": 95
+          }
+        },
+        "metric": "cord_f1",
+        "n": 100,
+        "score": 0.8701,
+        "total_exact_match": 0.92,
+        "valid_json_rate": 1.0
+      },
+      "historical_aggregate": {
+        "ci95": [
+          0.846,
+          0.8928
+        ],
+        "error_rate": 0.0,
+        "fields": {
+          "discount": {
+            "f1": 0.625,
+            "precision": 0.5,
+            "recall": 0.8333,
+            "support": 6
+          },
+          "items.count": {
+            "f1": 0.9831,
+            "precision": 0.9872,
+            "recall": 0.9789,
+            "support": 237
+          },
+          "items.name": {
+            "f1": 0.818,
+            "precision": 0.847,
+            "recall": 0.7909,
+            "support": 287
+          },
+          "items.price": {
+            "f1": 0.9474,
+            "precision": 0.9474,
+            "recall": 0.9474,
+            "support": 266
+          },
+          "items.unit_price": {
+            "f1": 0.4942,
+            "precision": 0.3333,
+            "recall": 0.9552,
+            "support": 67
+          },
+          "service": {
+            "f1": 0.96,
+            "precision": 0.9231,
+            "recall": 1.0,
+            "support": 12
+          },
+          "subtotal": {
+            "f1": 0.9624,
+            "precision": 0.9412,
+            "recall": 0.9846,
+            "support": 65
+          },
+          "tax": {
+            "f1": 0.9524,
+            "precision": 0.9302,
+            "recall": 0.9756,
+            "support": 41
+          },
+          "total": {
+            "f1": 0.9436,
+            "precision": 0.92,
+            "recall": 0.9684,
+            "support": 95
+          }
+        },
+        "metric": "cord_f1",
+        "n": 100,
+        "score": 0.8701,
+        "total_exact_match": 0.92,
+        "valid_json_rate": 1.0
+      },
+      "model": "gemini-3.1-flash-lite",
+      "path": "gemini-3.1-flash-lite__cord.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.05907325,
+        "error_count": 0,
+        "input_tokens": 121825,
+        "output_tokens": 19078,
+        "per_sample_mean_score": 0.863793,
+        "row_count": 100,
+        "uncached_latency": {
+          "count": 98,
+          "mean_s": 1.71245748,
+          "p50_s": 1.59677962,
+          "p95_s": 2.41378007
+        },
+        "unique_sample_count": 100
+      },
+      "sha256": "be32b98c7f60bd7d3325c800a9500dc3bcd36151541efa769e0d048ffa0b74c4",
+      "source": {
+        "filename": "gemini-3.1-flash-lite__cord.jsonl",
+        "latest_rows": 100,
+        "physical_rows": 134,
+        "sha256": "af79d0eff571a7114d802e1e3f7c434e0fa9283642c4ef3eec6e9b1f9b59aecb"
+      },
+      "task": "cord"
+    },
+    {
+      "corrected_aggregate": {
+        "ci95": [
+          0.8069,
+          0.8974
+        ],
+        "error_rate": 0.0,
+        "metric": "anls",
+        "n": 200,
+        "score": 0.8546
+      },
+      "historical_aggregate": {
+        "ci95": [
+          0.8168,
+          0.9027
+        ],
+        "error_rate": 0.0,
+        "metric": "anls",
+        "n": 200,
+        "score": 0.8621
+      },
+      "model": "gpt-5.4-mini",
+      "path": "gpt-5.4-mini__docvqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.2441365,
+        "error_count": 0,
+        "input_tokens": 294770,
+        "output_tokens": 1849,
+        "per_sample_mean_score": 0.85457739,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 1.52244505,
+          "p50_s": 1.2368775,
+          "p95_s": 3.07949554
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "6d76f0c300521567e07f4e55b5560853f5706be41bb65a096adb2d556dda58f7",
+      "source": {
+        "filename": "gpt-5.4-mini__docvqa.jsonl",
+        "latest_rows": 200,
+        "physical_rows": 200,
+        "sha256": "525d9c004c2d003833f372edeb02607e1a18c1894b2a5f0d886e83cc99af6e2f"
+      },
+      "task": "docvqa"
+    },
+    {
+      "corrected_aggregate": {
+        "ci95": [
+          0.23,
+          0.355
+        ],
+        "error_rate": 0.0,
+        "human_accuracy": 0.32,
+        "machine_accuracy": 0.26,
+        "metric": "relaxed_accuracy",
+        "n": 200,
+        "score": 0.29
+      },
+      "historical_aggregate": {
+        "ci95": [
+          0.48,
+          0.62
+        ],
+        "error_rate": 0.0,
+        "human_accuracy": 0.6,
+        "machine_accuracy": 0.5,
+        "metric": "relaxed_accuracy",
+        "n": 200,
+        "score": 0.55
+      },
+      "model": "gpt-5.4-mini",
+      "path": "gpt-5.4-mini__chartqa.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.0980535,
+        "error_count": 0,
+        "input_tokens": 113325,
+        "output_tokens": 1643,
+        "per_sample_mean_score": 0.29,
+        "row_count": 200,
+        "uncached_latency": {
+          "count": 200,
+          "mean_s": 1.25341414,
+          "p50_s": 1.07662266,
+          "p95_s": 2.76573574
+        },
+        "unique_sample_count": 200
+      },
+      "sha256": "7cfcf71056c4bcc7ee85573f0d0c5d73678993077d21bf7b646825be83743dc7",
+      "source": {
+        "filename": "gpt-5.4-mini__chartqa.jsonl",
+        "latest_rows": 200,
+        "physical_rows": 200,
+        "sha256": "25c14374924d83bba0f3866a390b2857825c40d085b523e2b6ba9af87b744df6"
+      },
+      "task": "chartqa"
+    },
+    {
+      "corrected_aggregate": {
+        "ci95": [
+          0.7892,
+          0.8469
+        ],
+        "error_rate": 0.0,
+        "fields": {
+          "discount": {
+            "f1": 0.6667,
+            "precision": 0.5556,
+            "recall": 0.8333,
+            "support": 6
+          },
+          "items.count": {
+            "f1": 0.971,
+            "precision": 0.9551,
+            "recall": 0.9873,
+            "support": 237
+          },
+          "items.name": {
+            "f1": 0.7592,
+            "precision": 0.766,
+            "recall": 0.7526,
+            "support": 287
+          },
+          "items.price": {
+            "f1": 0.9228,
+            "precision": 0.9029,
+            "recall": 0.9436,
+            "support": 266
+          },
+          "items.unit_price": {
+            "f1": 0.4469,
+            "precision": 0.2961,
+            "recall": 0.9104,
+            "support": 67
+          },
+          "service": {
+            "f1": 0.8571,
+            "precision": 0.75,
+            "recall": 1.0,
+            "support": 12
+          },
+          "subtotal": {
+            "f1": 0.7843,
+            "precision": 0.6818,
+            "recall": 0.9231,
+            "support": 65
+          },
+          "tax": {
+            "f1": 0.8354,
+            "precision": 0.8684,
+            "recall": 0.8049,
+            "support": 41
+          },
+          "total": {
+            "f1": 0.8808,
+            "precision": 0.8673,
+            "recall": 0.8947,
+            "support": 95
+          }
+        },
+        "metric": "cord_f1",
+        "n": 100,
+        "score": 0.8193,
+        "total_exact_match": 0.87,
+        "valid_json_rate": 1.0
+      },
+      "historical_aggregate": {
+        "ci95": [
+          0.7892,
+          0.8469
+        ],
+        "error_rate": 0.0,
+        "fields": {
+          "discount": {
+            "f1": 0.6667,
+            "precision": 0.5556,
+            "recall": 0.8333,
+            "support": 6
+          },
+          "items.count": {
+            "f1": 0.971,
+            "precision": 0.9551,
+            "recall": 0.9873,
+            "support": 237
+          },
+          "items.name": {
+            "f1": 0.7592,
+            "precision": 0.766,
+            "recall": 0.7526,
+            "support": 287
+          },
+          "items.price": {
+            "f1": 0.9228,
+            "precision": 0.9029,
+            "recall": 0.9436,
+            "support": 266
+          },
+          "items.unit_price": {
+            "f1": 0.4469,
+            "precision": 0.2961,
+            "recall": 0.9104,
+            "support": 67
+          },
+          "service": {
+            "f1": 0.8571,
+            "precision": 0.75,
+            "recall": 1.0,
+            "support": 12
+          },
+          "subtotal": {
+            "f1": 0.7843,
+            "precision": 0.6818,
+            "recall": 0.9231,
+            "support": 65
+          },
+          "tax": {
+            "f1": 0.8354,
+            "precision": 0.8684,
+            "recall": 0.8049,
+            "support": 41
+          },
+          "total": {
+            "f1": 0.8808,
+            "precision": 0.8673,
+            "recall": 0.8947,
+            "support": 95
+          }
+        },
+        "metric": "cord_f1",
+        "n": 100,
+        "score": 0.8193,
+        "total_exact_match": 0.87,
+        "valid_json_rate": 1.0
+      },
+      "model": "gpt-5.4-mini",
+      "path": "gpt-5.4-mini__cord.jsonl.gz",
+      "public_stats": {
+        "cost_usd": 0.13878615,
+        "error_count": 0,
+        "input_tokens": 119165,
+        "output_tokens": 9659,
+        "per_sample_mean_score": 0.802585,
+        "row_count": 100,
+        "uncached_latency": {
+          "count": 98,
+          "mean_s": 1.62745845,
+          "p50_s": 1.47119547,
+          "p95_s": 2.62289907
+        },
+        "unique_sample_count": 100
+      },
+      "sha256": "330a93118ab4fa1628ab0d461e0127c61465182bc636c73ca7f8209e03c3f1c5",
+      "source": {
+        "filename": "gpt-5.4-mini__cord.jsonl",
+        "latest_rows": 100,
+        "physical_rows": 100,
+        "sha256": "d77d3c7c60e67f1ded7022c833111374879b1c37f00704ed8fc47fe6f6b5d707"
+      },
+      "task": "cord"
+    }
+  ],
+  "inference": "Unchanged 2026-07-10 predictions; scoring-only recomputation.",
+  "kind": "corrected_offline_rescore",
+  "public_boundary": "Rows exclude questions, prompts, references, predictions, raw provider responses, dataset images, and credentials.",
+  "schema_version": 1,
+  "scope": {
+    "excluded_input_files": [
+      "gemini-2.5-flash-lite__chartqa.jsonl",
+      "gemini-2.5-flash-lite__docvqa.jsonl"
+    ],
+    "models": [
+      "qwen3vl-8b-base",
+      "qwen3vl-8b-receipt-qlora",
+      "gemini-3.1-flash-lite",
+      "gpt-5.4-mini"
+    ],
+    "task_order": [
+      "docvqa",
+      "chartqa",
+      "cord"
+    ],
+    "tasks": {
+      "chartqa": 200,
+      "cord": 100,
+      "docvqa": 200
+    },
+    "total_rows": 2000
+  },
+  "scoring": {
+    "bootstrap_iterations": 2000,
+    "bootstrap_seed": 3407,
+    "chartqa": "Pix2Struct-compatible relaxed correctness; 5% numeric tolerance",
+    "cord": "unchanged reference-dependent corpus-level field micro F1",
+    "docvqa": "case-insensitive, space-sensitive ANLS; normalized distance < 0.5"
+  }
+}

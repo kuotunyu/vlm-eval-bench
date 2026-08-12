@@ -1,14 +1,16 @@
-# Owner actions
+# Owner actions and feature freeze
 
-The local repository is a release candidate without these optional promotion
-steps. Before broader publication, the owner may choose to:
+The corrected local release candidate is complete without additional model or
+data work. Feature freeze is now appropriate: do not add models, datasets,
+fine-tuning, API evaluation, or broader product features as part of this
+release.
 
-1. Rerun the archived sample set from lawfully retained private data and raw
-   predictions if officially comparable DocVQA/ChartQA scores are required.
-   Use the corrected current metrics and publish the result as a new run; do
-   not overwrite the archived observations.
-2. Recheck model availability, aliases, provider pricing, quotas, and image
-   token accounting immediately before any paid evaluation.
-3. Choose a public repository URL and a security-reporting contact before
-   enabling remote publication. No remote, push, hosted release, or pull
-   request was created during local release preparation.
+Before external publication, the owner may choose to:
+
+1. Select a public repository URL and security-reporting contact. No remote,
+   push, pull request, tag, hosted release, or remote mutation was performed.
+2. Recheck provider model aliases, prices, quotas, and token accounting before
+   any future paid run; such a run must be published as a new evaluation.
+3. Pursue an official benchmark submission only with dataset-authorized
+   evaluation inputs and the corrected metrics. Do not replace either the
+   archived or corrected 2026-07-10 evidence.
