@@ -29,10 +29,7 @@ AUDIT_ROW_KEYS = {
     "error",
 }
 PUBLISHED_ARTIFACT_PATHS = {
-    "README.md",
-    "EVALUATION_CARD.md",
-    "results/leaderboard.md",
-    "results/audit/README.md",
+    "results/archived_leaderboard.md",
     "results/charts/scores_by_task.png",
     "results/charts/latency_p50_p95.png",
     "results/charts/cord_f1_breakdown.png",

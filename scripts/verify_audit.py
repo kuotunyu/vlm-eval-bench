@@ -14,8 +14,8 @@ from pathlib import Path
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--audit-dir", type=Path, default=Path("results/audit"))
-    parser.add_argument("--leaderboard", type=Path, default=Path("results/leaderboard.md"))
-    parser.add_argument("--readme", type=Path, default=Path("README.md"))
+    parser.add_argument("--leaderboard", type=Path, default=Path("results/archived_leaderboard.md"))
+    parser.add_argument("--readme", type=Path)
     args = parser.parse_args(argv)
 
     from vlmeval.audit import verify_audit_pack

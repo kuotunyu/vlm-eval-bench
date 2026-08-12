@@ -97,8 +97,7 @@ def test_non_finite_audit_score_is_rejected(tmp_path):
 def test_committed_pack_has_expected_coverage_and_matches_leaderboard():
     summary = verify_audit_pack(
         audit_dir=Path("results/audit"),
-        leaderboard_path=Path("results/leaderboard.md"),
-        readme_path=Path("README.md"),
+        leaderboard_path=Path("results/archived_leaderboard.md"),
     )
 
     assert summary == {
@@ -107,12 +106,12 @@ def test_committed_pack_has_expected_coverage_and_matches_leaderboard():
         "files": 12,
         "rows": 2000,
         "leaderboard_checked": True,
-        "readme_checked": True,
+        "readme_checked": False,
     }
 
 
 def test_leaderboard_confidence_interval_tampering_is_rejected(tmp_path):
-    leaderboard = Path("results/leaderboard.md").read_text(encoding="utf-8")
+    leaderboard = Path("results/archived_leaderboard.md").read_text(encoding="utf-8")
     tampered = leaderboard.replace("[0.905, 0.964]", "[0.000, 0.000]", 1)
     path = tmp_path / "leaderboard.md"
     path.write_text(tampered, encoding="utf-8")

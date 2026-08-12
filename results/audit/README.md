@@ -1,50 +1,36 @@
-# Published result audit pack
+# Archived 2026-07-10 implementation evidence
 
-This directory contains 2,000 final rows for the four complete archived model
-runs. Twelve deterministic gzip JSONL files cover every model/task pair.
-`run_manifest.json` records hashes, row counts, aggregate provenance, the exact
-historical configuration snapshot, sample-manifest hashes, and the
-deduplication rule.
+This directory preserves the original implementation results: 12 deterministic
+gzip JSONL files, four models × three tasks, and 2,000 final rows.
+`run_manifest.json` records source hashes, row counts, frozen aggregates,
+sample/config hashes, and deduplication semantics. These scores are historical
+evidence and were not overwritten by the corrected release.
+
+The original human-readable values remain in
+[`../archived_leaderboard.md`](../archived_leaderboard.md). The corrected
+scoring release is separate under [`../corrected/`](../corrected/).
 
 ## Privacy boundary
 
-Schema version 2 contains only:
-
-- opaque sample ID, model, task, and already-computed per-row score;
-- input/output token counts and their accounting source;
-- cost, uncached/cached latency state, and final error state.
-
-It excludes dataset images, questions, prompts, references, model predictions,
-raw provider responses, credentials, and cache data. Strict schema validation
-rejects extra fields and non-finite or invalid numeric values.
+Schema version 2 contains only opaque IDs, model/task, original computed score,
+token accounting, cost, latency/cache state, and final error. It excludes
+dataset images, questions, prompts, references, model predictions, provider
+responses, credentials, and cache data.
 
 ## Verify
-
-From the repository root:
 
 ```bash
 uv sync --locked
 uv run python scripts/verify_audit.py
 ```
 
-The verifier checks:
+The archived verifier validates hashes, coverage, strict schemas, row counts,
+cost/usage/latency/error statistics, and the archived leaderboard. DocVQA and
+ChartQA original means are recomputed from original public row scores. CORD and
+all reference-dependent intervals are provenance-checked.
 
-- all gzip, sample-manifest, configuration, and published-artifact hashes;
-- exact model/task coverage, unique sample IDs, and row counts;
-- per-row field types and ranges;
-- independently recomputed DocVQA/ChartQA row-score means;
-- cost, usage, latency, terminal error, and valid-JSON claims;
-- score intervals and numeric claims in the leaderboard and root README.
+For the corrected release and old/new comparisons, run:
 
-## Recomputability boundary
-
-DocVQA and ChartQA published means are independently recomputed from the
-already-computed row scores. The pack intentionally cannot rerun metric
-matching because predictions and references are absent. CORD's corpus-level
-micro F1, per-field values, and all bootstrap intervals require private
-predictions/references, so the verifier checks their frozen aggregate
-provenance rather than claiming an independent rescore.
-
-Maintainers who lawfully retain the ignored inputs can rebuild this pack with
-`uv run python scripts/build_audit_pack.py`. A rebuild must undergo a privacy
-review before publication.
+```bash
+uv run python scripts/verify_corrected.py
+```
