@@ -154,9 +154,10 @@ def verify_release_tree(root: Path) -> dict[str, int]:
         ):
             findings.append("dataset or prediction text in results/leaderboard.md")
 
-    audit_dir = root / "results" / "audit"
-    if audit_dir.is_dir():
-        for path in sorted(audit_dir.glob("*.jsonl.gz")):
+    for evidence_dir in (root / "results" / "audit", root / "results" / "corrected"):
+        if not evidence_dir.is_dir():
+            continue
+        for path in sorted(evidence_dir.glob("*.jsonl.gz")):
             try:
                 read_audit_rows(path)
             except (OSError, ValueError) as exc:
@@ -208,7 +209,9 @@ def _verify_archive_names(names_and_sizes: list[tuple[str, int]], *, wheel: bool
             "/README.md",
             "/pyproject.toml",
             "/results/audit/run_manifest.json",
+            "/results/corrected/rescore_manifest.json",
             "/scripts/verify_audit.py",
+            "/scripts/verify_corrected.py",
             "/scripts/verify_release.py",
         )
     )
