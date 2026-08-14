@@ -16,6 +16,23 @@ Publication added repository metadata only. No model, dataset, prediction,
 metric, or accounting evidence was changed, and no inference or provider call
 was performed.
 
+## v0.1.1: claim and governance closeout
+
+Tag `v0.1.0` (commit `049ef34`) is unchanged and still points at the audited
+evidence tree. `v0.1.1` is a documentation- and governance-only follow-up:
+
+- README.md/README.en.md: calibrated language that had drifted into
+  overclaiming (e.g. "significant gain" / "high anti-degradation stability" /
+  "unbiased rescore" / "100% reproducible leaderboard" / "de-identified"), and
+  restored condensed evidence-boundary, "why scores changed", and cost/latency
+  caveat sections that existed at v0.1.0 but were dropped by a later README
+  redesign. No score, claim boundary, or evidence file changed.
+- GitHub governance: Projects disabled, Dependabot vulnerability alerts
+  enabled, delete-branch-on-merge enabled, branch protection admin enforcement
+  turned on for `main`.
+- `pyproject.toml`/`uv.lock`/`CITATION.cff` version bumped to `0.1.1`; no
+  dependency versions changed.
+
 ## Attribution
 
 This project is authored and copyrighted by a single party, `kuotunyu`.
