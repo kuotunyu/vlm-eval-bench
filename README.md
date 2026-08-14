@@ -8,7 +8,7 @@
 
 [English](README.en.md)
 
-本專案為針對文件理解任務打造的可審計（Auditable）、配置驅動視覺語言模型（VLM）評測框架：統一控制資料取樣、影像標準化預處理、決定性解碼、API 自動重試、SQLite 快取與付費成本熔斷門禁，並提供 2,000 筆去識別化公開驗證封包與完整離線重算鏈路。
+本專案為針對文件理解任務打造的可審計（Auditable）、配置驅動視覺語言模型（VLM）評測框架：統一控制資料取樣、影像標準化預處理、決定性解碼、API 自動重試、SQLite 快取與付費成本熔斷門禁，並提供 2,000 筆隱私縮減（privacy-reduced）公開驗證封包與完整離線重算鏈路。
 
 ---
 
@@ -31,7 +31,7 @@ flowchart TD
 
     subgraph EvalStage ["階段三：嚴謹指標重算與審計 (Scoring & Verification)"]
         direction LR
-        Raw --> Rescore["標準化指標精確重算<br/>(ANLS · RelaxedAcc · Micro F1)"] --> AuditPack[("去識別化審計封包<br/>(2,000 筆公開驗證數據)")] --> Gate{"三階離線驗證門禁<br/>(Audit · Corrected · Release)"}
+        Raw --> Rescore["標準化指標精確重算<br/>(ANLS · RelaxedAcc · Micro F1)"] --> AuditPack[("隱私縮減審計封包<br/>(2,000 筆公開驗證數據)")] --> Gate{"三階離線驗證門禁<br/>(Audit · Corrected · Release)"}
     end
 
     DataStage --> ExecStage --> EvalStage
@@ -69,7 +69,7 @@ flowchart TD
 
     subgraph PublicStage ["階段三：公開交付與全鏈路驗證 (Verification & Release)"]
         direction LR
-        V1["verify_audit.py<br/>(原始封包驗證)"] & V2["verify_corrected.py<br/>(重算與 Delta 驗證)"] & V3["verify_release.py<br/>(金鑰與隱私掃描)"] --> Release(["安全公開發布版本<br/>(100% 可重現排行榜)"])
+        V1["verify_audit.py<br/>(原始封包驗證)"] & V2["verify_corrected.py<br/>(重算與 Delta 驗證)"] & V3["verify_release.py<br/>(金鑰與隱私掃描)"] --> Release(["安全公開發布版本<br/>(公開 Verifier 可核實範圍)"])
     end
 
     M1 & M2 & M3 --> Runner
@@ -104,8 +104,8 @@ flowchart TD
 | gpt-5.4-mini | 0.8546 [0.8069, 0.8974] | 0.2900 [0.2300, 0.3550] | 0.8193 [0.7892, 0.8469] | 0.6546 |
 
 核心工程發現：
-- **領域微調效益：** 收據專用 QLoRA 相較同參 8B Base 模型在目標領域 CORD 達到顯著增益（**+0.181** F1），在非訓練領域（DocVQA -0.013、ChartQA 0.000）保持極高抗退化穩定性。
-- **嚴謹計分修正：** 本次發布不重跑推論，而是以 space-sensitive DocVQA ANLS 與 Pix2Struct 相容之 ChartQA Relaxed Correctness 對原始凍結預測進行無偏差重算，舊版數據完整保留於 [archived leaderboard](results/archived_leaderboard.md)，差異比對詳見 [corrected leaderboard](results/leaderboard.md)。
+- **領域微調效益：** 收據專用 QLoRA 相較同一 8B Base 模型，在其訓練域 CORD 觀察到 in-domain 增益（**+0.181** F1，為觀察值，未經正式 paired significance 檢定）。DocVQA（-0.013）與 ChartQA（0.000）僅為兩項有限的 out-of-domain 實測結果，不代表廣泛能力提升。
+- **嚴謹計分修正：** 本次發布不重跑推論，而是依 corrected metric contract（space-sensitive DocVQA ANLS、Pix2Struct 相容之 ChartQA Relaxed Correctness）對原始凍結預測重新計分；CORD-v2 F1 演算法未變。舊版數據完整保留於 [archived leaderboard](results/archived_leaderboard.md)，差異比對詳見 [corrected leaderboard](results/leaderboard.md)。
 
 ---
 
@@ -137,7 +137,19 @@ uv run python scripts/verify_corrected.py
 uv run python scripts/verify_release.py
 ```
 
-`verify_corrected.py` 將自動校驗 2,000 筆去識別化數據之雜湊鏈、重新計算 DocVQA 與 ChartQA 信賴區間，並嚴格核對所有宣稱與排行榜數值。
+`verify_corrected.py` 將自動校驗 2,000 筆隱私縮減公開列之雜湊鏈、重新計算 DocVQA 與 ChartQA 信賴區間，並嚴格核對所有宣稱與排行榜數值。
+
+**公開／私有證據邊界：** 公開封包只含 sample ID、分數、usage、cost、latency 與 error 狀態等純量欄位，**不含**題目、圖片、references、model answers、raw predictions 或 provider 原始回應；`data/samples/` 下僅公開整數索引。CORD-v2 的 references／predictions 刻意排除在外，其 F1 僅能做 **provenance 驗證**（雜湊與列數逐一比對），無法在公開範圍內獨立重算；可獨立重算的部分是 DocVQA／ChartQA 的均值與信賴區間。
+
+---
+
+## 分數為何改變
+
+- **DocVQA：** 舊版計分會壓縮答案內部空白，且在標準化 Levenshtein 距離「恰好等於 0.5」時仍視為通過；新版依 corrected metric contract，大小寫不敏感但空白敏感，且距離必須「嚴格小於 0.5」。
+- **ChartQA：** 舊版只是移除 `%` 符號、未換算為比例，且會移除貨幣與千分位符號；新版依 Pix2Struct 行為，`%` 會換算為比例後再套用 5% 相對容差，非數值目標則採大小寫不敏感的精確比對。
+- **CORD-v2：** 計分演算法（corpus-level field micro F1）未變，所有 CORD 聚合值與逐列分數與舊版完全相同。
+
+API 端 ChartQA 分數下降是計分修正所致，**不是** provider 行為改變或重新呼叫模型的結果——所有比較都基於同一批凍結預測。完整證據邊界見 [EVALUATION_CARD.md](EVALUATION_CARD.md)。
 
 ---
 
@@ -150,7 +162,16 @@ uv run python scripts/verify_release.py
 
 ---
 
+## 成本與延遲注意事項
+
+- 所有 cost/usage/latency 會計數據均**沿用歷史推論當時的紀錄，未重新計算**。API 費用是依 provider 回傳的 usage 與當時 config 內設定的價格估算，**未對過發票**；歷史 OpenAI 設定曾對 image token 另計比例，僅作為 provenance 保留，並非目前計費依據。
+- Config 內的 provider 價格／配額／模型別名僅供估算，**不是目前的計費承諾**；執行任何新的付費評測前，請自行重新確認當前價格與配額。
+- 本地端費用是依測得推論時間換算的 RTX 4090 租賃等價金額（非實際付款）；本地 batch-1 延遲**未計入網路時間**，與 API 的 round-trip 延遲**不可直接比較**。
+- 0% error rate 僅涵蓋最終去重後的紀錄，不代表過程中沒有被重試過的暫時性失敗。
+
+---
+
 ## 資料與授權
 
-- 本專案程式碼採 [MIT License](LICENSE) 授權。
-- 第三方資料集版權歸原作者所有，完整評測邊界與聲明請見 [EVALUATION_CARD.md](EVALUATION_CARD.md)。
+- 本專案程式碼採 [MIT License](LICENSE) 授權；第三方資料集授權與各 API 提供商條款各自獨立，**不隨本專案授權轉移**，下載或使用前請自行確認。
+- 完整評測邊界、可公開重算範圍與聲明請見 [EVALUATION_CARD.md](EVALUATION_CARD.md)。
