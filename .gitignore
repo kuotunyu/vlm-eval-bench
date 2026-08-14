@@ -7,10 +7,17 @@
 credentials*.json
 secrets*.json
 
-# local agent instructions
+# local agent instructions & private notes
 AGENTS.md
 CLAUDE.md
 GEMINI.md
+PLAN.md
+PROGRESS.md
+PROJECT_PLAN.md
+interview*.md
+INTERVIEW_PREP.md
+*.private.md
+.agents/
 .claude/
 .codex/
 /plan.md
