@@ -11,7 +11,7 @@ type: software
 authors:
   - alias: kuotunyu
     email: "61350295+kuotunyu@users.noreply.github.com"
-version: "0.1.0"
+version: "0.1.1"
 date-released: "2026-08-14"
 license: MIT
 repository-code: "https://github.com/kuotunyu/vlm-eval-bench"

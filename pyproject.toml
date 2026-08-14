@@ -1,6 +1,6 @@
 [project]
 name = "vlm-eval-bench"
-version = "0.1.0"
+version = "0.1.1"
 description = "Config-driven VLM evaluation harness: fine-tuned local Qwen3-VL vs commercial API models on document understanding (DocVQA / ChartQA / CORD-v2)"
 readme = "README.md"
 license = "MIT"
