@@ -18,8 +18,8 @@ was performed.
 
 ## v0.1.1: claim and governance closeout
 
-Tag `v0.1.0` (commit `049ef34`) is unchanged and still points at the audited
-evidence tree. `v0.1.1` is a documentation- and governance-only follow-up:
+`v0.1.0`'s content (the audited evidence tree) is unchanged. `v0.1.1` is a
+documentation- and governance-only follow-up:
 
 - README.md/README.en.md: calibrated language that had drifted into
   overclaiming (e.g. "significant gain" / "high anti-degradation stability" /
@@ -32,6 +32,22 @@ evidence tree. `v0.1.1` is a documentation- and governance-only follow-up:
   turned on for `main`.
 - `pyproject.toml`/`uv.lock`/`CITATION.cff` version bumped to `0.1.1`; no
   dependency versions changed.
+
+## History rewrite (2026-08-14)
+
+Every commit hash in this repository changed once, after `v0.1.1` shipped.
+`LICENSE` and this file both carried a legal name in earlier history; it was
+removed with `git filter-branch` across all commits and both tags. No content
+other than that name changed anywhere — authors, committers, dates, commit
+messages, and every other file are identical to before the rewrite. No model,
+dataset, prediction, metric, or accounting evidence changed.
+
+Old commit hashes (including the original `v0.1.0` and `v0.1.1` commits) no
+longer resolve; a fresh clone or `git fetch --all --tags --prune` picks up the
+rewritten history. `v0.1.0` and `v0.1.1` keep their tag names, now pointing at
+the rewritten equivalents. This needed one force-push to `main`; branch
+protection's force-push restriction was disabled only for that push and
+restored immediately after.
 
 ## Attribution
 
