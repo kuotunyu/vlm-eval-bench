@@ -16,17 +16,16 @@ Publication added repository metadata only. No model, dataset, prediction,
 metric, or accounting evidence was changed, and no inference or provider call
 was performed.
 
+## Attribution
+
+This project is authored and copyrighted by a single party, `kuotunyu`.
+`LICENSE`, `CITATION.cff`, and `pyproject.toml` all use that identity, and every
+commit is authored by it. Keep new files consistent with it.
+
 ## Remaining owner decisions
 
-1. `LICENSE` carries two copyright lines, a legal name and `kuotunyu`. If these
-   name one person, collapse them into a single line; if they name separate
-   parties, keep both. Only the owner can make this determination, so it was
-   left untouched.
-2. `CITATION.cff` credits the author by the `kuotunyu` handle, mirroring
-   `pyproject.toml`. Replace it with a preferred legal name and ORCID if the
-   work should be cited that way.
-3. Recheck provider model aliases, prices, quotas, and token accounting before
+1. Recheck provider model aliases, prices, quotas, and token accounting before
    any future paid run; such a run must be published as a new evaluation.
-4. Pursue an official benchmark submission only with dataset-authorized
+2. Pursue an official benchmark submission only with dataset-authorized
    evaluation inputs and the corrected metrics. Do not replace either the
    archived or corrected 2026-07-10 evidence.
