@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this evaluation harness or its published evidence, please cite it."
+title: "vlm-eval-bench"
+abstract: >-
+  An auditable, config-driven harness for comparing local and API
+  vision-language models on document understanding (DocVQA, ChartQA, CORD-v2),
+  published together with a corrected offline rescore of a frozen 2026-07-10
+  run. The published evidence is privacy-reduced and verifiable without GPU,
+  dataset, or API access.
+type: software
+authors:
+  - alias: kuotunyu
+    email: "61350295+kuotunyu@users.noreply.github.com"
+version: "0.1.0"
+date-released: "2026-08-14"
+license: MIT
+repository-code: "https://github.com/kuotunyu/vlm-eval-bench"
+url: "https://github.com/kuotunyu/vlm-eval-bench"
+keywords:
+  - vision-language-model
+  - evaluation-harness
+  - document-understanding
+  - docvqa
+  - chartqa
+  - cord-v2
+  - reproducible-research
