@@ -49,6 +49,27 @@ the rewritten equivalents. This needed one force-push to `main`; branch
 protection's force-push restriction was disabled only for that push and
 restored immediately after.
 
+## Dependency security fixes (2026-08-14)
+
+Enabling Dependabot surfaced 8 alerts, all in transitive dependencies pulled
+in via `datasets`/`huggingface_hub`/provider SDKs, none in this project's own
+code. `uv lock --upgrade-package` resolved fixed versions within existing
+`pyproject.toml` constraints for three, closing 7 of the 8 alerts:
+
+- `cryptography` 49.0.0 -> 50.0.0 (1 high)
+- `aiohttp` 3.14.1 -> 3.14.3 (1 high, 2 medium)
+- `pyasn1` 0.6.3 -> 0.6.4 (3 high)
+
+`torch` (1 low) is not fixed: it is pulled in only by the optional `local`
+extra (unsloth/transformers/peft/bitsandbytes, for local GPU inference), and
+`unsloth==2026.7.2` pins `torch>=2.4.0,<2.11.0` — structurally incompatible
+with the patched `torch>=2.13.0`. No safe resolution exists without either
+dropping/relaxing `unsloth`'s pin (breaks local inference reproducibility,
+including parity with the sibling vlm-receipt-extractor project) or waiting
+for an unsloth release that raises its own torch ceiling. Left open; not
+exploitable via the default `uv sync --locked` path used in CI and by the
+public verifiers, since `local` is an opt-in extra.
+
 ## Attribution
 
 This project is authored and copyrighted by a single party, `kuotunyu`.
@@ -62,3 +83,6 @@ commit is authored by it. Keep new files consistent with it.
 2. Pursue an official benchmark submission only with dataset-authorized
    evaluation inputs and the corrected metrics. Do not replace either the
    archived or corrected 2026-07-10 evidence.
+3. Monitor `unsloth` releases for a torch-ceiling bump that would let
+   `torch` move to `>=2.13.0` and close the remaining low-severity
+   Dependabot alert.
