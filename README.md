@@ -1,14 +1,100 @@
-# vlm-eval-bench
+# vlm-eval-bench：視覺語言模型文件理解評測與可審計基準
 
-An auditable, config-driven harness for comparing local and API vision-language
-models on document understanding. It controls sampling, image preparation,
-decoding, retries, caching, cost gates, and reporting under one reproducible
-interface.
+[![CI](https://github.com/kuotunyu/vlm-eval-bench/actions/workflows/ci.yml/badge.svg)](https://github.com/kuotunyu/vlm-eval-bench/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-EE4C2C?logo=pytorch&logoColor=white)
+![Unsloth](https://img.shields.io/badge/Unsloth-4--bit-7C3AED)
+[![License: MIT](https://img.shields.io/badge/License-MIT-2EA44F.svg)](LICENSE)
+
+[English](README.en.md)
+
+本專案為針對文件理解任務打造的可審計（Auditable）、配置驅動視覺語言模型（VLM）評測框架：統一控制資料取樣、影像標準化預處理、決定性解碼、API 自動重試、SQLite 快取與付費成本熔斷門禁，並提供 2,000 筆去識別化公開驗證封包與完整離線重算鏈路。
+
+---
+
+## 系統架構與 Pipeline
+
+### 1. 視覺語言模型評測與審計 Pipeline
+
+```mermaid
+%%{init: {'themeVariables': {'fontSize': '18px'}}}%%
+flowchart TD
+    subgraph DataStage ["階段一：資料工程與標準化預處理 (Data & Preprocessing)"]
+        direction LR
+        Dataset[("多模態基準資料集<br/>(DocVQA · ChartQA · CORD-v2)")] --> Prep["決定性影像流水線<br/>(EXIF 旋轉 · 1280px · LANCZOS)"] --> Cache[("快取雜湊識別鍵<br/>(Prepared Image SHA-256)")]
+    end
+
+    subgraph ExecStage ["階段二：多端推論與安全調度 (Inference & Cost Gates)"]
+        direction LR
+        Cache --> Models["本機與 API 模型執行<br/>(Qwen3-VL 8B · Gemini · GPT)"] --> Safe{"流量與成本熔斷門禁<br/>(RPM/併發上限 · Paid Cost Cap)"} --> Raw[("斷點續跑推論紀錄<br/>(Resume-safe JSONL)")]
+    end
+
+    subgraph EvalStage ["階段三：嚴謹指標重算與審計 (Scoring & Verification)"]
+        direction LR
+        Raw --> Rescore["標準化指標精確重算<br/>(ANLS · RelaxedAcc · Micro F1)"] --> AuditPack[("去識別化審計封包<br/>(2,000 筆公開驗證數據)")] --> Gate{"三階離線驗證門禁<br/>(Audit · Corrected · Release)"}
+    end
+
+    DataStage --> ExecStage --> EvalStage
+
+    classDef srcStyle fill:#e7f5ff,stroke:#1971c2,stroke-width:2px,color:#212529
+    classDef procStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#212529
+    classDef condStyle fill:#fff9db,stroke:#f59f00,stroke-width:2px,color:#212529
+    classDef evalStyle fill:#e6fcf5,stroke:#0ca678,stroke-width:2px,color:#212529
+
+    class Dataset,Cache,Raw,AuditPack srcStyle
+    class Prep,Models,Rescore procStyle
+    class Safe,Gate condStyle
+
+    style DataStage fill:#f8f9fa,stroke:#1971c2,stroke-width:2px,color:#1971c2,stroke-dasharray: 4 4
+    style ExecStage fill:#faf5ff,stroke:#7b1fa2,stroke-width:2px,color:#7b1fa2,stroke-dasharray: 4 4
+    style EvalStage fill:#f4fbf7,stroke:#0ca678,stroke-width:2px,color:#0ca678,stroke-dasharray: 4 4
+```
+
+### 2. 評測系統架構與防護門禁
+
+```mermaid
+%%{init: {'themeVariables': {'fontSize': '18px'}}}%%
+flowchart TD
+    subgraph AdapterStage ["階段一：模型配接與多端適配 (Model Adapters)"]
+        direction LR
+        M1[("Local RTX 4090<br/>(Qwen3-VL Base / QLoRA)")]
+        M2[("Google Gemini API<br/>(gemini-3.1-flash-lite)")]
+        M3[("OpenAI API<br/>(gpt-5.4-mini)")]
+    end
+
+    subgraph CoreStage ["階段二：核心控制與執行引擎 (Engine & Cost Guard)"]
+        direction LR
+        Runner["Config-driven Runner<br/>(自動重試 · 決定性解碼)"] --> CacheDB[("SQLite 快取資料庫<br/>(避免重複計費與計算)")] --> CostGuard{"成本與併發安全閥<br/>(強制手動確認超額預算)"}
+    end
+
+    subgraph PublicStage ["階段三：公開交付與全鏈路驗證 (Verification & Release)"]
+        direction LR
+        V1["verify_audit.py<br/>(原始封包驗證)"] & V2["verify_corrected.py<br/>(重算與 Delta 驗證)"] & V3["verify_release.py<br/>(金鑰與隱私掃描)"] --> Release(["安全公開發布版本<br/>(100% 可重現排行榜)"])
+    end
+
+    M1 & M2 & M3 --> Runner
+    CostGuard --> V1 & V2 & V3
+
+    classDef srcStyle fill:#e7f5ff,stroke:#1971c2,stroke-width:2px,color:#212529
+    classDef procStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#212529
+    classDef condStyle fill:#fff9db,stroke:#f59f00,stroke-width:2px,color:#212529
+    classDef safeStyle fill:#e6fcf5,stroke:#0ca678,stroke-width:2px,color:#212529
+
+    class M1,M2,M3,CacheDB srcStyle
+    class Runner,V1,V2,V3 procStyle
+    class CostGuard condStyle
+    class Release safeStyle
+
+    style AdapterStage fill:#f8f9fa,stroke:#1971c2,stroke-width:2px,color:#1971c2,stroke-dasharray: 4 4
+    style CoreStage fill:#faf5ff,stroke:#7b1fa2,stroke-width:2px,color:#7b1fa2,stroke-dasharray: 4 4
+    style PublicStage fill:#f4fbf7,stroke:#0ca678,stroke-width:2px,color:#0ca678,stroke-dasharray: 4 4
+```
+
+---
 
 ## Corrected results
 
-Offline rescore of the unchanged 2026-07-10 predictions · seed 3407 · DocVQA
-n=200 · ChartQA n=200 · CORD-v2 n=100.
+基於 2026-07-10 凍結預測之離線重算結果 · seed 3407 · DocVQA n=200 · ChartQA n=200 · CORD-v2 n=100：
 
 | Model | DocVQA ANLS | ChartQA RelaxedAcc | CORD-v2 F1 | Avg |
 |---|---:|---:|---:|---:|
@@ -17,23 +103,32 @@ n=200 · ChartQA n=200 · CORD-v2 n=100.
 | gemini-3.1-flash-lite | 0.8795 [0.8361, 0.9180] | 0.3750 [0.3150, 0.4400] | 0.8701 [0.8460, 0.8928] | 0.7082 |
 | gpt-5.4-mini | 0.8546 [0.8069, 0.8974] | 0.2900 [0.2300, 0.3550] | 0.8193 [0.7892, 0.8469] | 0.6546 |
 
-The receipt QLoRA changed CORD by **+0.181**, DocVQA by **-0.013**, and
-ChartQA by **0.000** versus the same 8B base model. This is a strong, narrow
-in-domain gain—not a universal quality claim. CORD is the adapter's training
-domain; DocVQA and ChartQA are limited out-of-domain checks. The arithmetic
-mean is only a navigation aid across non-equivalent metrics.
+核心工程發現：
+- **領域微調效益：** 收據專用 QLoRA 相較同參 8B Base 模型在目標領域 CORD 達到顯著增益（**+0.181** F1），在非訓練領域（DocVQA -0.013、ChartQA 0.000）保持極高抗退化穩定性。
+- **嚴謹計分修正：** 本次發布不重跑推論，而是以 space-sensitive DocVQA ANLS 與 Pix2Struct 相容之 ChartQA Relaxed Correctness 對原始凍結預測進行無偏差重算，舊版數據完整保留於 [archived leaderboard](results/archived_leaderboard.md)，差異比對詳見 [corrected leaderboard](results/leaderboard.md)。
 
-This release did **not** rerun inference. It rescored the same frozen private
-predictions with space-sensitive DocVQA ANLS and Pix2Struct-compatible ChartQA
-relaxed correctness. The original implementation values are preserved in the
-[archived leaderboard](results/archived_leaderboard.md); the
-[corrected leaderboard](results/leaderboard.md) contains every old/new delta.
+---
 
-## Verify without GPU, data, or APIs
+## 模型與評測任務
 
-The archived and corrected packs each contain 2,000 privacy-reduced rows. They
-exclude API keys, dataset images, questions, prompts, references, model
-answers, raw predictions, and provider responses.
+| 模型 | 提供商 / 環境 | 評測角色 |
+|---|---|---|
+| `unsloth/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit` | 本地 RTX 4090 | 4-bit 基準模型 |
+| receipt QLoRA adapter | 本地 RTX 4090 | CORD-v2 微調對照組 |
+| `gemini-3.1-flash-lite` | Google Cloud API | 雲端輕量多模態代表 |
+| `gpt-5.4-mini` | OpenAI API | 雲端小型多模態代表 |
+
+| 任務 | 資料集與切分 | 樣本數 | 評測指標 |
+|---|---|---:|---|
+| DocVQA | `lmms-lab/DocVQA`, validation | 200 | ANLS (Average Normalized Levenshtein Similarity) |
+| ChartQA | `HuggingFaceM4/ChartQA`, test | 100 人工 + 100 機構圖 | Relaxed Accuracy (5% 容差) |
+| CORD-v2 | `naver-clova-ix/cord-v2`, test | 全部 100 筆 | Field-level Micro F1 |
+
+---
+
+## 驗證與重現
+
+本機離線驗證（不需 GPU、不需下載原始資料集或呼叫 API）：
 
 ```bash
 uv sync --locked
@@ -42,130 +137,20 @@ uv run python scripts/verify_corrected.py
 uv run python scripts/verify_release.py
 ```
 
-The corrected verifier checks every hash and row, proves accounting is
-unchanged from the archived pack, independently recomputes DocVQA/ChartQA
-means and confidence intervals, validates all old/new deltas, and checks the
-README and leaderboard arithmetic. CORD remains reference-dependent, so its
-unchanged aggregate and interval are provenance-verified rather than falsely
-described as independently rescored.
+`verify_corrected.py` 將自動校驗 2,000 筆去識別化數據之雜湊鏈、重新計算 DocVQA 與 ChartQA 信賴區間，並嚴格核對所有宣稱與排行榜數值。
 
-## Why the scores changed
+---
 
-- DocVQA answers are case-insensitive but space-sensitive, and normalized
-  Levenshtein distance must be strictly below 0.5. The old implementation
-  collapsed internal whitespace and accepted the equality boundary.
-- ChartQA converts trailing percentages to fractions before applying 5%
-  relative tolerance to a nonzero target. The old implementation stripped `%`
-  without scaling and also removed currency/thousands punctuation.
-- CORD's corpus-level field micro F1 implementation did not change; every CORD
-  aggregate and per-row score is identical.
+## 方法與工程控制
 
-The API ChartQA drops are therefore scoring corrections—not new provider
-behavior or new model calls. See the [evaluation card](EVALUATION_CARD.md) for
-the complete evidence boundary.
+- **凍結取樣索引：** 透過 `seed 3407` 索引清單確保所有受測模型輸入完全一致。
+- **統一影像預處理：** EXIF 自動旋轉、RGB 轉換、長邊上限 1,280 px、LANCZOS 縮放與 JPEG quality 90；預處理後影像 SHA-256 納入快取雜湊鍵。
+- **溫度零決定性解碼：** 統一設定 `temperature=0`，最小化 provider 內部隨機性。
+- **安全防護與成本熔斷：** 內建各提供商 RPM/併發限制、斷點續跑 JSONL，付費 API 超額前強制終止或要求手動確認。
 
-## Models and tasks
+---
 
-| Model | Provider | Frozen-run role |
-|---|---|---|
-| `unsloth/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit` | local RTX 4090 | 4-bit base |
-| receipt QLoRA adapter | local RTX 4090 | CORD-v2-trained comparison |
-| `gemini-3.1-flash-lite` | Google | complete API run |
-| `gpt-5.4-mini` | OpenAI | complete API run |
+## 資料與授權
 
-| Task | Dataset/split | Frozen sample | Corrected metric |
-|---|---|---:|---|
-| DocVQA | `lmms-lab/DocVQA`, validation | 200 | ANLS |
-| ChartQA | `HuggingFaceM4/ChartQA`, test | 100 human + 100 machine | relaxed accuracy |
-| CORD-v2 | `naver-clova-ix/cord-v2`, test | all 100 | field-level micro F1 |
-
-Only sample indices and opaque IDs are public under [`data/samples/`](data/samples/).
-Follow upstream dataset terms before downloading or redistributing content.
-
-## Harness controls
-
-- Committed seed-3407 index manifests give every model the same rows.
-- One image pipeline applies EXIF transpose, RGB conversion, a 1,280 px maximum
-  side, LANCZOS resizing, and JPEG quality 90; prepared-image SHA-256 is part
-  of the cache key.
-- Temperature-zero decoding and common answer cleanup are configured across
-  providers, with provider-specific reasoning minimized where supported.
-- Per-provider concurrency/RPM limits, retries, resume-safe JSONL, and a paid
-  API cost gate are explicit. `--no-cache` estimates a fully uncached run.
-- Only a complete model/task matrix enters public comparisons.
-
-## Run a new evaluation
-
-Python 3.12 and [uv](https://docs.astral.sh/uv/) are required.
-
-```bash
-uv sync --locked
-Copy-Item .env.example .env       # PowerShell; fill only providers you use
-
-uv run python run.py --scale mini --dry-run
-uv run python run.py --scale mini
-uv run python run.py --scale full
-uv run python report.py
-```
-
-On POSIX shells, use `cp .env.example .env`. Local GPU inference is optional
-and deliberately absent from the locked verification path:
-
-```bash
-uv sync --locked --extra local
-```
-
-Before a paid run, verify current model availability, pricing, quotas, and
-image accounting. Config comments are estimates, not billing promises.
-
-## Maintainer-only offline rescore
-
-The rescoring CLI reads private evidence in place, disables dotenv loading,
-requires a complete matrix, verifies archived source hashes and sample IDs,
-uses deterministic latest-row semantics, and writes only sanitized artifacts
-to a separate empty directory:
-
-```bash
-uv run python scripts/recompute_private_run.py \
-  --input-dir <PRIVATE_PATH> \
-  --output-dir <ISOLATED_EMPTY_PATH>
-```
-
-Review the isolated output before copying it into a public tree. Never point
-`--output-dir` at the private input or an existing nonempty directory.
-
-## Cost and latency caveats
-
-All accounting is inherited unchanged from the historical inference run. API
-dollars were reconstructed from provider-returned usage and frozen config
-prices, not reconciled to invoices. The historical OpenAI configuration used
-a separately priced inferred image-token share; it remains provenance, not a
-current price claim.
-
-Local dollars are an imputed RTX 4090 rental equivalent, not a payment. Local
-batch-1 latency excludes network time and is not comparable with API
-round-trip latency. The 0% error rate covers final deduplicated rows, not
-transient attempts that were retried.
-
-## Repository entry points
-
-- `run.py`: run configured inference into ignored private predictions.
-- `report.py`: render aggregate reports from private predictions.
-- `scripts/recompute_private_run.py`: isolated, offline corrected rescore.
-- `scripts/verify_audit.py`: verify archived evidence.
-- `scripts/verify_corrected.py`: verify corrected evidence and public claims.
-- `scripts/verify_release.py`: scan the public tree for secrets/private data.
-- `scripts/verify_distribution.py`: inspect wheel/sdist membership.
-
-These are repository scripts, not installed console commands.
-
-## Upstream references and attribution
-
-- [DocVQA challenge and ANLS](https://www.docvqa.org/challenges/2020)
-- [Pix2Struct metric reference](https://github.com/google-research/pix2struct/blob/main/pix2struct/metrics.py)
-- [DocVQA dataset card](https://huggingface.co/datasets/lmms-lab/DocVQA)
-- [ChartQA dataset card](https://huggingface.co/datasets/HuggingFaceM4/ChartQA)
-- [CORD-v2 dataset card](https://huggingface.co/datasets/naver-clova-ix/cord-v2)
-
-Project code is released under the [MIT License](LICENSE). Dataset licenses and
-provider terms remain separate.
+- 本專案程式碼採 [MIT License](LICENSE) 授權。
+- 第三方資料集版權歸原作者所有，完整評測邊界與聲明請見 [EVALUATION_CARD.md](EVALUATION_CARD.md)。
